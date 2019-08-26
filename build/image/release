@@ -1,2 +1,2 @@
 JAVA_VERSION="12.0.1"
-MODULES="java.base java.datatransfer java.xml java.prefs java.desktop java.logging javafx.base jdk.unsupported javafx.graphics javafx.controls javafx.media jdk.unsupported.desktop javafx.swing org.apache.commons.lang3 org.jsoup poi org.darisadesigns.polyglotlina.polyglot"
+MODULES="java.base java.logging java.transaction.xa java.xml java.sql commons.csv java.datatransfer java.prefs java.desktop java.scripting javafx.base jdk.unsupported javafx.graphics javafx.controls javafx.media jdk.unsupported.desktop javafx.swing org.apache.commons.lang3 org.apache.commons.text org.jsoup org.darisadesigns.polyglotlina.polyglot"

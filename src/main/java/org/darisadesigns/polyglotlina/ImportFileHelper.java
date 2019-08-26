@@ -28,25 +28,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-// TODO: JAVA 12 UPGRADE - APACHE.POI MODULES
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+// TODO: Java 12 upgrade
 //import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 //import org.apache.poi.openxml4j.opc.OPCPackage;
 //import org.apache.poi.ss.usermodel.Cell;
 //import org.apache.poi.ss.usermodel.Row;
-//import org.apache.poi.xssf.usermodel.XSSFCell;
-//import org.apache.poi.xssf.usermodel.XSSFRow;
-//import org.apache.poi.xssf.usermodel.XSSFSheet;
+//import org.apache.poi.ss.usermodel.Sheet;
 //import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
- // TODO: JAVA 12 UPGRADE
-//import org.supercsv.io.CsvListReader;
-//import org.supercsv.io.ICsvListReader;
-//import org.supercsv.prefs.CsvPreference;
 
 public class ImportFileHelper {
 
@@ -57,27 +57,29 @@ public class ImportFileHelper {
     private String iClass;
     private String iDefinition;
     private String iPronunciation;
-    // private CsvPreference csvPreference;  // TODO: JAVA 12 UPGRADE
+    private CSVFormat format; 
     private boolean bFirstLineLabels;
     private boolean bCreateTypes;
+    private String quoteChar;
 
     public ImportFileHelper(DictCore _core) {
         core = _core;
     }
- // TODO: JAVA 12 UPGRADE
-//    public void setOptions(String _iConWord, String _iLocalWord, String _iType,
-//            String _iClass, String _iDefinition, String _iPronunciation,
-//            CsvPreference _csvPreference, boolean _bFirstLineLabels, boolean _bCreateTypes) {
-//        iConWord = _iConWord;
-//        iLocalWord = _iLocalWord;
-//        iType = _iType;
-//        iClass = _iClass;
-//        iDefinition = _iDefinition;
-//        iPronunciation = _iPronunciation;
-//        bFirstLineLabels = _bFirstLineLabels;
-//        bCreateTypes = _bCreateTypes;
-//        csvPreference = _csvPreference;
-//    }
+    
+    public void setOptions(String _iConWord, String _iLocalWord, String _iType,
+            String _iClass, String _iDefinition, String _iPronunciation,
+            CSVFormat _format, boolean _bFirstLineLabels, boolean _bCreateTypes, String _quoteChar) {
+        iConWord = _iConWord;
+        iLocalWord = _iLocalWord;
+        iType = _iType;
+        iClass = _iClass;
+        iDefinition = _iDefinition;
+        iPronunciation = _iPronunciation;
+        bFirstLineLabels = _bFirstLineLabels;
+        bCreateTypes = _bCreateTypes;
+        format = _format;
+        quoteChar = _quoteChar;
+    }
 
     /**
      * Imports lexicons from foreign formats
@@ -88,29 +90,32 @@ public class ImportFileHelper {
      * @throws Exception
      */
     public void importFile(String inputFile, Integer sheetNum) throws Exception {
- // TODO: JAVA 12 UPGRADE
-//        if (inputFile.endsWith("xls")
-//                || inputFile.endsWith("xlsx")
-//                || inputFile.endsWith("xlsm")) {
+        // TODO: JAVA 12 - consider alternative to supercsv
+        if (inputFile.endsWith("xls")
+                || inputFile.endsWith("xlsx")
+                || inputFile.endsWith("xlsm")) {
+            // TODO: JAVA 12 upgrade 
 //            importExcel(inputFile, sheetNum);
-//        } else if (inputFile.endsWith("csv")
-//                || inputFile.endsWith("txt")) {
-//            importCSV(inputFile, csvPreference);
-//        } else {
-//            importCSV(inputFile, csvPreference);
+        } else if (inputFile.endsWith("csv")
+                || inputFile.endsWith("txt")) {
+            importCSV(inputFile, format);
+        } else {
+            importCSV(inputFile, format);
+            // TODO: JAVA 12 UPGRADE
 //            throw new InvalidFormatException("Unrecognized file type for file: "
 //                    + inputFile + ". Defaulting to CSV functionality.");
-//        }
+        }
     }
 
-    private void importExcel(String inputFile, Integer sheetNum) throws Exception {
-        // TODO: JAVA 12 UPGRADE - MODULES
+    // TODO: Java 12 upgrade
+//    private void importExcel(String inputFile, Integer sheetNum) throws Exception {
 //        XSSFWorkbook wb;
-//        XSSFSheet mySheet;
+//        Sheet mySheet;
 //        // TODO: JAVA 12 Upgrade - clean this mess up if it works (try should be double commented)
 //        //try (InputStream myFile = new FileInputStream(inputFile)) { // OPCPackage.open(new File(filePath))
+//            // TODO: JAVA 12 for some reason it will not recognize WorkbookFactory or Workbook, whether they're imported from poi or poi.ooxml...
 //            wb = XSSFWorkbookFactory.create(OPCPackage.open(new File(inputFile)));
-//            mySheet = wb.getSheetAt(sheetNum);
+//            mySheet = ((XSSFWorkbook)wb).getSheetAt(sheetNum);
 //            Iterator<Row> rowIterator = mySheet.iterator();
 //
 //            // if first row is labels, skip
@@ -122,196 +127,199 @@ public class ImportFileHelper {
 //                processWordRow(rowIterator.next());
 //            }
 //        //}
-    }
-
-     // TODO: JAVA 12 UPGRADE
-//    private void importCSV(String inputFile, CsvPreference csvPreference) throws Exception {
-//        List<List<String>> rows = getRows(inputFile, csvPreference);
-//        
-//        if (bFirstLineLabels) {
-//            rows.remove(0);
-//        }
-//
-//        for (List<String> row : rows) {
-//            List<String> columnList;
-//            ConWord newWord = new ConWord();
-//
-//            // add conword
-//            columnList = Arrays.asList(iConWord.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                if (newWord.getValue().trim().length() == 0) {
-//                    newWord.setValue(row.get(cellNum).trim());
-//                } else {
-//                    newWord.setValue(newWord.getValue() + ", " + row.get(cellNum).trim());
-//                }
-//            }
-//
-//            // if conword is blank, continue. Bare minimum for imported word is a conword value.
-//            if (newWord.getValue().trim().length() == 0) {
-//                continue;
-//            }
-//
-//            // add definition
-//            columnList = Arrays.asList(iDefinition.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                if (newWord.getDefinition().trim().length() == 0) {
-//                    newWord.setDefinition(row.get(cellNum).trim());
-//                } else {
-//                    newWord.setDefinition(newWord.getDefinition() + "\n\n" + row.get(cellNum).trim());
-//                }
-//            }
-//
-//            // add classes
-//            columnList = Arrays.asList(iClass.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                String className = "CLASS" + cellNum.toString(); // guarantee unique name for user to rename later (based on column)
-//                WordClass wordProp = null;
-//
-//                // find class
-//                for (WordClass findProp : core.getWordPropertiesCollection().getAllWordClasses()) {
-//                    if (findProp.getValue().equals(className)) {
-//                        wordProp = findProp;
-//                        break;
-//                    }
-//                }
-//
-//                // create class if doesn't yet exist
-//                if (wordProp == null) {
-//                    wordProp = new WordClass();
-//                    wordProp.setValue(className);
-//                    int propId = core.getWordPropertiesCollection().addNode(wordProp);
-//                    wordProp = (WordClass) core.getWordPropertiesCollection().getNodeById(propId);
-//                }
-//
-//                // find class value
-//                WordClassValue wordVal = null;
-//                for (WordClassValue findVal : wordProp.getValues()) {
-//                    if (findVal.getValue().equals(row.get(cellNum).trim())) {
-//                        wordVal = findVal;
-//                        break;
-//                    }
-//                }
-//
-//                // create class value if doesn't exist yet
-//                if (wordVal == null) {
-//                    wordVal = new WordClassValue();
-//                    wordVal.setValue(row.get(cellNum).trim());
-//                    wordVal = wordProp.addValue(row.get(cellNum).trim());
-//                }
-//
-//                // add class value to word
-//                newWord.setClassValue(wordProp.getId(), wordVal.getId());
-//            }
-//
-//            // add local word
-//            columnList = Arrays.asList(iLocalWord.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                if (newWord.getLocalWord().trim().length() == 0) {
-//                    newWord.setLocalWord(row.get(cellNum).trim());
-//                } else {
-//                    newWord.setLocalWord(newWord.getLocalWord() + ", " + row.get(cellNum).trim());
-//                }
-//            }
-//
-//            // add pronunciation
-//            columnList = Arrays.asList(iPronunciation.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                if (newWord.getPronunciation().trim().length() == 0) {
-//                    newWord.setPronunciation(row.get(cellNum).trim());
-//                } else {
-//                    newWord.setPronunciation(newWord.getPronunciation() + ", " + row.get(cellNum).trim());
-//                }
-//            }
-//
-//            // add type
-//            columnList = Arrays.asList(iType.split(","));
-//            for (String entry : columnList) {
-//                if (entry == null || entry.length() == 0) {
-//                    continue;
-//                }
-//
-//                Integer cellNum = cellNumCheckGet(entry);
-//
-//                // fail silently for files that truncate empty trailing fields
-//                if (cellNum >= row.size()) {
-//                    continue;
-//                }
-//
-//                if (newWord.getWordTypeId() == 0) {
-//                    newWord.setWordTypeId(core.getTypes().findOrCreate(row.get(cellNum).trim()).getId());
-//                } else {
-//                    newWord.setWordTypeId(core.getTypes().findOrCreate(newWord.getWordTypeDisplay() + ", " + row.get(cellNum).trim()).getId());
-//                }
-//            }
-//
-//            // add type to list of potential types if applicable and user
-//            // specified
-//            if (bCreateTypes && newWord.getWordTypeId() != 0
-//                    && !core.getTypes().nodeExists(newWord.getWordTypeId())) {
-//                core.getTypes().clear();
-//                TypeNode newType = core.getTypes().getBufferType();
-//                newType.setValue(newWord.getWordTypeDisplay());
-//                core.getTypes().insert();
-//            }
-//
-//            core.getWordCollection().addWord(newWord);
-//        }
 //    }
+
+    private void importCSV(String inputFile, CSVFormat format) throws Exception {
+        if (!quoteChar.isEmpty()) {
+            format = format.withQuote(quoteChar.charAt(0));
+        }
+        
+        List<List<String>> rows = getRows(inputFile, format);
+        
+        if (bFirstLineLabels) {
+            rows.remove(0);
+        }
+
+        for (List<String> row : rows) {
+            List<String> columnList;
+            ConWord newWord = new ConWord();
+
+            // add conword
+            columnList = Arrays.asList(iConWord.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                if (newWord.getValue().trim().length() == 0) {
+                    newWord.setValue(row.get(cellNum).trim());
+                } else {
+                    newWord.setValue(newWord.getValue() + ", " + row.get(cellNum).trim());
+                }
+            }
+
+            // if conword is blank, continue. Bare minimum for imported word is a conword value.
+            if (newWord.getValue().trim().length() == 0) {
+                continue;
+            }
+
+            // add definition
+            columnList = Arrays.asList(iDefinition.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                if (newWord.getDefinition().trim().length() == 0) {
+                    newWord.setDefinition(row.get(cellNum).trim());
+                } else {
+                    newWord.setDefinition(newWord.getDefinition() + "\n\n" + row.get(cellNum).trim());
+                }
+            }
+
+            // add classes
+            columnList = Arrays.asList(iClass.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                String className = "CLASS" + cellNum.toString(); // guarantee unique name for user to rename later (based on column)
+                WordClass wordProp = null;
+
+                // find class
+                for (WordClass findProp : core.getWordPropertiesCollection().getAllWordClasses()) {
+                    if (findProp.getValue().equals(className)) {
+                        wordProp = findProp;
+                        break;
+                    }
+                }
+
+                // create class if doesn't yet exist
+                if (wordProp == null) {
+                    wordProp = new WordClass();
+                    wordProp.setValue(className);
+                    int propId = core.getWordPropertiesCollection().addNode(wordProp);
+                    wordProp = (WordClass) core.getWordPropertiesCollection().getNodeById(propId);
+                }
+
+                // find class value
+                WordClassValue wordVal = null;
+                for (WordClassValue findVal : wordProp.getValues()) {
+                    if (findVal.getValue().equals(row.get(cellNum).trim())) {
+                        wordVal = findVal;
+                        break;
+                    }
+                }
+
+                // create class value if doesn't exist yet
+                if (wordVal == null) {
+                    wordVal = new WordClassValue();
+                    wordVal.setValue(row.get(cellNum).trim());
+                    wordVal = wordProp.addValue(row.get(cellNum).trim());
+                }
+
+                // add class value to word
+                newWord.setClassValue(wordProp.getId(), wordVal.getId());
+            }
+
+            // add local word
+            columnList = Arrays.asList(iLocalWord.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                if (newWord.getLocalWord().trim().length() == 0) {
+                    newWord.setLocalWord(row.get(cellNum).trim());
+                } else {
+                    newWord.setLocalWord(newWord.getLocalWord() + ", " + row.get(cellNum).trim());
+                }
+            }
+
+            // add pronunciation
+            columnList = Arrays.asList(iPronunciation.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                if (newWord.getPronunciation().trim().length() == 0) {
+                    newWord.setPronunciation(row.get(cellNum).trim());
+                } else {
+                    newWord.setPronunciation(newWord.getPronunciation() + ", " + row.get(cellNum).trim());
+                }
+            }
+
+            // add type
+            columnList = Arrays.asList(iType.split(","));
+            for (String entry : columnList) {
+                if (entry == null || entry.length() == 0) {
+                    continue;
+                }
+
+                Integer cellNum = cellNumCheckGet(entry);
+
+                // fail silently for files that truncate empty trailing fields
+                if (cellNum >= row.size()) {
+                    continue;
+                }
+
+                if (newWord.getWordTypeId() == 0) {
+                    newWord.setWordTypeId(core.getTypes().findOrCreate(row.get(cellNum).trim()).getId());
+                } else {
+                    newWord.setWordTypeId(core.getTypes().findOrCreate(newWord.getWordTypeDisplay() + ", " + row.get(cellNum).trim()).getId());
+                }
+            }
+
+            // add type to list of potential types if applicable and user
+            // specified
+            if (bCreateTypes && newWord.getWordTypeId() != 0
+                    && !core.getTypes().nodeExists(newWord.getWordTypeId())) {
+                core.getTypes().clear();
+                TypeNode newType = core.getTypes().getBufferType();
+                newType.setValue(newWord.getWordTypeDisplay());
+                core.getTypes().insert();
+            }
+
+            core.getWordCollection().addWord(newWord);
+        }
+    }
 
     /**
      * Collects all rows from given CSV file and returns string input values
@@ -323,22 +331,26 @@ public class ImportFileHelper {
      * @throws FileNotFoundException if CSV does not exist
      * @throws IOException if read error
      */
-     // TODO: JAVA 12 UPGRADE
-//    private List<List<String>> getRows(String inputFile, CsvPreference csvPreference) throws FileNotFoundException, IOException {
-//        List<List<String>> ret = new ArrayList<>();
-//
-//        InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile), StandardCharsets.UTF_8);
-//        
-//        try (ICsvListReader listReader = new CsvListReader(reader, csvPreference)) {
-//            List<String> row;
-//
-//            while ((row = listReader.read()) != null) {
-//                ret.add(deNullRow(row));
-//            }
-//        }
-//
-//        return ret;
-//    }
+    private List<List<String>> getRows(String inputFile, CSVFormat format) throws FileNotFoundException, IOException {
+        List<List<String>> ret = new ArrayList<>();
+        
+        try (
+            Reader reader = Files.newBufferedReader(Paths.get(inputFile));
+            CSVParser csvParser = new CSVParser(reader, format);
+        ) {
+            for (CSVRecord csvRecord : csvParser) {
+                List<String> row = new ArrayList<>();
+                
+                for (int i = 0; i < csvRecord.size(); i++) {
+                    row.add(csvRecord.get(i));
+                }
+                
+                ret.add(deNullRow(row));
+            }
+        }
+
+        return ret;
+    }
     
     /**
      * Returns new list with empty strings rather than null values where appropriate
@@ -381,7 +393,7 @@ public class ImportFileHelper {
      * @param row row to process
      * @throws Exception
      */
-    // TODO: JAVA 12 UPGRADE - MODULES
+    // TODO: Java 12 upgrade
 //    private void processWordRow(Row row) throws Exception {
 //        ConWord newWord = new ConWord();
 //
