@@ -179,6 +179,7 @@ public class PropertiesManager {
      * Gets PolyGlot's cannonical directory, regardless of what the OS returns
      * @return working directory
      */
+    // TODO: JAVA 12 UPGRADE: Make certain this works properly (it doesn't)
     public File getCannonicalDirectory() {
         File ret;
         

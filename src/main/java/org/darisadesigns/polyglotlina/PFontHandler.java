@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import org.apache.poi.util.IOUtils;
+// TODO: Java 12 upgrade
+//import org.apache.poi.util.IOUtils;
 
 /**
  * Split out from IOHandler due to large portion devoted to handling fonts
@@ -71,7 +72,8 @@ public class PFontHandler {
 
                     try (FileOutputStream out = new FileOutputStream(tempFile)) {
                         try (InputStream inputStream = zipFile.getInputStream(fontEntry)) {
-                            IOUtils.copy(inputStream, out);
+                            // TODO: Java 12 upgrade
+//                            IOUtils.copy(inputStream, out);
                         }
 
                         try {
@@ -315,11 +317,12 @@ public class PFontHandler {
 
                 if (fontFile != null) {
                     try (FileInputStream fontInputStream = new FileInputStream(fontFile)) {
-                        if (isConFont) {
-                            core.getPropertiesManager().setCachedFont(IOUtils.toByteArray(fontInputStream));
-                        } else {
-                            core.getPropertiesManager().setCachedLocalFont(IOUtils.toByteArray(fontInputStream));
-                        }
+                        // TODO: Java 12 upgrade
+//                        if (isConFont) {
+//                            core.getPropertiesManager().setCachedFont(IOUtils.toByteArray(fontInputStream));
+//                        } else {
+//                            core.getPropertiesManager().setCachedLocalFont(IOUtils.toByteArray(fontInputStream));
+//                        }
                     }
                     byte[] buffer = new byte[1024];
                     try (FileInputStream fis = new FileInputStream(fontFile)) {

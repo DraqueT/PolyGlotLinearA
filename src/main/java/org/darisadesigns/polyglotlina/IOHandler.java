@@ -203,7 +203,7 @@ public class IOHandler {
      *
      * @param _fileName full path of target file to read
      * @param _core dictionary core
-     * @return cushandler class
+     * @return CustHandler class
      * @throws java.io.IOException on read problem
      */
     public static CustHandler getHandlerFromFile(String _fileName, DictCore _core) throws IOException {
@@ -978,7 +978,9 @@ public class IOHandler {
      */
     public byte[] getUnicodeFontByteArray() throws FileNotFoundException, IOException {
         try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontLocation)) {
-            return IOUtils.toByteArray(localStream);
+            // TODO: Java 12 upgrade
+//            return IOUtils.toByteArray(localStream);
+            return null;
         }
     }
 
@@ -992,7 +994,9 @@ public class IOHandler {
      */
     public byte[] getUnicodeFontItalicByteArray() throws FileNotFoundException, IOException {
         try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontItalicLocation)) {
-            return IOUtils.toByteArray(localStream);
+            // TODO: Java 12 upgrade
+//            return IOUtils.toByteArray(localStream);
+            return null;
         }
     }
 

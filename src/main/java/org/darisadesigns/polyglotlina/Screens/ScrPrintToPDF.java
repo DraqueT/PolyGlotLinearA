@@ -28,14 +28,15 @@ import org.darisadesigns.polyglotlina.CustomControls.PTextPane;
 import org.darisadesigns.polyglotlina.CustomControls.PTextField;
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.IOHandler;
-import org.darisadesigns.polyglotlina.PExportToPDF;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+// TODO: JAVA 12 UPGRADE: Rework this to use the PolyGlot PDF Java 8 module
+// Remember that this should check for Java 8 runnability
 
 /**
  *
@@ -335,9 +336,9 @@ public class ScrPrintToPDF extends PDialog {
             return;
         }
         
-        PExportToPDF export;
-        
         // TODO: JAVA 12 UPGRADE - MODULES
+//        PExportToPDF export;
+        
 //        try {
 //            export = new PExportToPDF(core, txtSavePath.getText());
 //        } catch (IOException e) {

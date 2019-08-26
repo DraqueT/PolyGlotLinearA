@@ -34,7 +34,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-// TODO: JAVA 12 UPGRADE - MODULES
 import org.jsoup.Jsoup;
 
 /**
@@ -89,9 +88,7 @@ public class WebInterface {
      * @return 
      */
     public static String getTextFromHtml(String text) {
-        // TODO: JAVA 12 UPGRADE - MODULES
-        return null;
-//        return Jsoup.parse(text).text();
+        return Jsoup.parse(text).text();
     }
     
     /**
