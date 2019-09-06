@@ -116,18 +116,6 @@ public final class ClipboardHandler implements ClipboardOwner {
             }
         }
         
-        // TODO: JAVA 12 UPGRADE - SEE IF PRESUMING IT IS A REGULAR IMAGE IS ACCEPTABLE (might not need to juggle like here)
-//        if (ret instanceof sun.awt.image.MultiResolutionImage) {
-//            MultiResolutionCachedImage mri = (MultiResolutionCachedImage) ret;
-//            List<Image> images = mri.getResolutionVariants();
-//            
-//            if (images != null && images.size() > 0) {
-//                ret = images.get(0);
-//            } else {
-//                throw new Exception("Unable to retrieve image from clipboard.");
-//            }
-//        }
-        
         return ret;
     }
     

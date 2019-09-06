@@ -37,13 +37,13 @@ import javax.swing.UIManager;
 public class InfoBox extends JFrame {
 
     private final Icon optionIcon = UIManager.getIcon("FileView.computerIcon");
-    private static final PButton yes;
-    private static final PButton no;
-    private static final PButton ok;
-    private static final PButton cancel;
+    private static final PButton YES;
+    private static final PButton NO;
+    private static final PButton OK;
+    private static final PButton CANCEL;
 
     static {
-        ok = new PButton() {
+        OK = new PButton() {
             @Override
             public boolean equals(Object value) {
                 return Integer.class == value.getClass()
@@ -56,7 +56,7 @@ public class InfoBox extends JFrame {
                 return hash;
             }
         };
-        yes = new PButton() {
+        YES = new PButton() {
             @Override
             public boolean equals(Object value) {
                 return Integer.class == value.getClass()
@@ -70,7 +70,7 @@ public class InfoBox extends JFrame {
             }
         };
 
-        no = new PButton() {
+        NO = new PButton() {
             @Override
             public boolean equals(Object value) {
                 return Integer.class == value.getClass()
@@ -83,7 +83,7 @@ public class InfoBox extends JFrame {
                 return hash;
             }
         };
-        cancel = new PButton() {
+        CANCEL = new PButton() {
             @Override
             public boolean equals(Object value) {
                 return Integer.class == value.getClass()
@@ -97,27 +97,27 @@ public class InfoBox extends JFrame {
             }
         };
 
-        ok.setText("OK");
-        ok.addActionListener((ActionEvent e) -> {
+        OK.setText("OK");
+        OK.addActionListener((ActionEvent e) -> {
             JOptionPane pane = (JOptionPane) ((JPanel) ((JComponent) e.getSource()).getParent()).getParent();
             // set the value of the option pane
             pane.setValue(JOptionPane.OK_OPTION);
         });
         
-        yes.setText("Yes");
-        yes.addActionListener((ActionEvent e) -> {
+        YES.setText("Yes");
+        YES.addActionListener((ActionEvent e) -> {
             JOptionPane pane = (JOptionPane) ((JPanel) ((JComponent) e.getSource()).getParent()).getParent();
             pane.setValue(JOptionPane.YES_OPTION);
         });
 
-        no.setText("No");
-        no.addActionListener((ActionEvent e) -> {
+        NO.setText("No");
+        NO.addActionListener((ActionEvent e) -> {
             JOptionPane pane = (JOptionPane) ((JPanel) ((JComponent) e.getSource()).getParent()).getParent();
             pane.setValue(JOptionPane.NO_OPTION);
         });
 
-        cancel.setText("Cancel");
-        cancel.addActionListener((ActionEvent e) -> {
+        CANCEL.setText("Cancel");
+        CANCEL.addActionListener((ActionEvent e) -> {
             JOptionPane pane = (JOptionPane) ((JPanel) ((JComponent) e.getSource()).getParent()).getParent();
             pane.setValue(JOptionPane.CANCEL_OPTION);
         });
@@ -158,7 +158,7 @@ public class InfoBox extends JFrame {
      * @return true if chooser accepts, false otherwise
      */
     public static boolean actionConfirmation(String title, String message, Window parent) {
-        PButton[] buttons = {yes, no};
+        PButton[] buttons = {YES, NO};
         int option = POptionPane.showOptionDialog(parent,
                 message,
                 title,
@@ -183,13 +183,14 @@ public class InfoBox extends JFrame {
     }
     
     /**
-     * Collects double value form user. Will re-call self if non-double value given.
+     * Collects double value form user.Will re-call self if non-double value given.
      * @param title title of query window
      * @param message message on window given to user
+     * @param warningMessage Warning message to show if user inputs wrong value (blank for default)
      * @param parent owner of dialog
      * @return double value if input, null if cancel hit
      */
-    public static Double doubleInputDialog(String title, String message, Window parent) {
+    public static Double doubleInputDialog(String title, String message, String warningMessage, Window parent) {
         Double ret = null;
         
         String inputString = JOptionPane.showInputDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
@@ -199,8 +200,9 @@ public class InfoBox extends JFrame {
                 ret = Double.parseDouble(inputString);
             } catch (HeadlessException | NumberFormatException e) {
                 // TODO: this message should be passed in rather than hardcoded here. It is particular to fonts.
-                InfoBox.warning("Incorrect Input", "Please provide a numeric value (default 12.0) for font size.", parent);
-                ret = InfoBox.doubleInputDialog(title, message, parent);
+                warningMessage = warningMessage.isEmpty() ? "Please input numeric value." : warningMessage;
+                InfoBox.warning("Incorrect Input", warningMessage, parent);
+                ret = InfoBox.doubleInputDialog(title, message, warningMessage, parent);
             }
         }
         
@@ -209,7 +211,7 @@ public class InfoBox extends JFrame {
 
     private Integer doYesNoCancel(String title, String message, Window parent) {
         int ret;
-        PButton[] option = {yes, no, cancel};
+        PButton[] option = {YES, NO, CANCEL};
 
         ret = POptionPane.showOptionDialog(parent, 
                 message, 
@@ -224,19 +226,19 @@ public class InfoBox extends JFrame {
     }
 
     private void doError(String title, String message, Window parent) {
-        Object[] option = {ok};        
+        Object[] option = {OK};        
         POptionPane.showOptionDialog(parent, message, title, DEFAULT_OPTION,
                          JOptionPane.ERROR_MESSAGE, null, option, null);
     }
 
     private void doWarning(String title, String message, Window parent) {
-        Object[] option = {ok};        
+        Object[] option = {OK};        
         POptionPane.showOptionDialog(parent, message, title, DEFAULT_OPTION,
                          JOptionPane.WARNING_MESSAGE, null, option, null);
     }
 
     private void doInfo(String title, String message, Window parent) {
-        Object[] option = {ok};        
+        Object[] option = {OK};        
         POptionPane.showOptionDialog(parent, message, title, DEFAULT_OPTION,
                          JOptionPane.INFORMATION_MESSAGE, null, option, null);
     }

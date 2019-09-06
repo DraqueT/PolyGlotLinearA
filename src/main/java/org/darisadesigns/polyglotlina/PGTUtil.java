@@ -268,6 +268,7 @@ public class PGTUtil {
     public static final String notFoundImage = "/assets/org/DarisaDesigns/ImageAssets/not-found.png";
     public static final String polyGlotAbout = "/assets/org/DarisaDesigns/ImageAssets/PolyGlot_About.png";
     public static final String polyGlotEaster = "/assets/org/DarisaDesigns/ImageAssets/n0rara_draque.png";
+    public static final String TESTRESOURCES = "src/test/java/TestResources/";
     
     public static final String playButtonUp = "/assets/org/DarisaDesigns/ImageAssets/play_OFF_BIG.png";
     public static final String playButtonDown = "/assets/org/DarisaDesigns/ImageAssets/play_ON_BIG.png";
@@ -283,7 +284,6 @@ public class PGTUtil {
     public static final String ipa_other ="/assets/org/DarisaDesigns/ImageAssets/IPA_Other.png";
     public static final String mainMenuBG = "/assets/org/DarisaDesigns/ImageAssets/PolyGlotBG.png";
     
-    public static final String jarArchiveName = "PolyGlot.jar"; // TODO: JAVA 12 UPGRADE Analyze where this is use
     public static final String ipaSoundsLocation = "/assets/org/DarisaDesigns/SoundAssets/";
     public static final String RTLMarker = "\u202e";
     public static final String LTRMarker = "\u202c";
