@@ -31,8 +31,6 @@ import org.darisadesigns.polyglotlina.IOHandler;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-// TODO: JAVA 12 UPGRADE - MODULES
-//import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.commons.csv.CSVFormat;
 
 /**
@@ -396,7 +394,7 @@ public class ScrExcelImport extends PDialog {
                 dispose();
                 parent.openLexicon(true);
             }
-            // TODO: JAVA 12 UPGRADE
+            // TODO: JAVA 12 UPGRADE: make custom exception type to catch here
 //        } catch (InvalidFormatException e) {
 //            IOHandler.writeErrorLog(e);
 //            InfoBox.warning("Unrecognized File Type", e.getLocalizedMessage(), core.getRootWindow());

@@ -19,9 +19,20 @@
  */
 package org.darisadesigns.polyglotlina;
 
+import java.awt.Desktop;
+import java.awt.Taskbar;
+import java.awt.desktop.AboutEvent;
+import java.awt.desktop.AboutHandler;
+import java.awt.desktop.PreferencesEvent;
+import java.awt.desktop.PreferencesHandler;
+import java.awt.desktop.PrintFilesEvent;
+import java.awt.desktop.PrintFilesHandler;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitHandler;
+import java.awt.desktop.QuitResponse;
 import org.darisadesigns.polyglotlina.CustomControls.InfoBox;
 import org.darisadesigns.polyglotlina.CustomControls.PFrame;
-//import org.darisadesigns.polyglotlina.Screens.ScrAbout; // TODO: JAVA 12 UPGRADE
+import org.darisadesigns.polyglotlina.Screens.ScrAbout;
 import org.darisadesigns.polyglotlina.Screens.ScrMainMenu;
 
 /**
@@ -37,39 +48,23 @@ public class PolyGlot {
      */
     public static void main(final String args[]) {
         try {
-            Object preNimbusMenu = null;
-            System.setProperty("apple.awt.application.name", PGTUtil.displayName);
             boolean osIntegration = shouldUseOSInegration(args);
             
             // must be set before accessing System to test OS (values will simply be ignored for other OSes
             if (osIntegration) {
-                // TODO: apple.laf.useScreenMenuBar should be enabled (and the whole preNimbusMenu
-                // mess removed) once upgrading past Java 9. useScreenMenuBar is automatic and cleaner
+                if (PGTUtil.isOSX) {
+                    // set program icon
+                    Taskbar.getTaskbar().setIconImage(PGTUtil.polyGlotIcon.getImage());
+                }
+                
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("apple.awt.application.name", PGTUtil.displayName);
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", PGTUtil.displayName);
             }
 
-            // TODO: JAVA 12 UPDATE - DISABLED - DO I EVEN NEED THIS ANY MORE? CONSIDER
-//            if (PGTUtil.isOSX && osIntegration) {
-//                preNimbusMenu = osintegration_mac.OSIntegration_Mac.setBlankAppleMenuBar();
-//
-//                osintegration_mac.OSIntegration_Mac.setIcon(PGTUtil.polyGlotIcon.getImage());
-//
-//                Runnable scrAboutRun = new Runnable(){
-//                    @Override
-//                    public void run() {
-//                        ScrAbout.run(new DictCore());
-//                    }
-//                };
-//
-//                osintegration_mac.OSIntegration_Mac.setAboutHandler(scrAboutRun);
-//            }
             setupNimbus();
             
             conditionalBetaSetup();
-
-            // final Object finalPreNimbusMenu = preNimbusMenu; // TODO: JAVA 12 UPGRADE
 
             java.awt.EventQueue.invokeLater(() -> {
 
@@ -78,14 +73,13 @@ public class PolyGlot {
                     String overridePath = args.length > 1 ? args[1] : "";
                     ScrMainMenu s = null;
 
-                    // set DPI scaling to false (requires Java 9)
                     // TODO: JAVA 12 UPGRADE - see whether this is necessary any more
                     System.getProperties().setProperty("Dsun.java2d.dpiaware", "false");
 
                     if (canStart()) {
                         try {
                             // separated due to serious nature of Thowable vs Exception
-                            PFrame.setupOSSpecificCutCopyPaste();
+                            PFrame.setupOSSpecificCutCopyPaste(); // TODO: consider moving this to PolyGlot.java (requires testing)
                             s = new ScrMainMenu(overridePath);
                             s.checkForUpdates(false);
                             s.setVisible(true);
@@ -98,24 +92,36 @@ public class PolyGlot {
 
                             // runs additional integration if on OSX system
                             if (PGTUtil.isOSX && osIntegration) {
-                                // TODO: JAVA 12 UPDATE - DISABLED - DO I EVEN NEED THIS ANY MORE? CONSIDER
-//                                final ScrMainMenu staticScr = s;
-//                                osintegration_mac.OSIntegration_Mac.integrateMacMenuBar(s.getJMenuBar(), finalPreNimbusMenu);
-//                                osintegration_mac.OSIntegration_Mac.setQuitAction(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        staticScr.dispose();
-//                                    }
-//
-//                                });
-//
-//                                osintegration_mac.OSIntegration_Mac.setPreferanceManager(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        staticScr.showOptions();
-//                                    }
-//
-//                                });
+                                Desktop desk = Desktop.getDesktop();
+                                final ScrMainMenu staticScr = s;
+                                
+                                desk.setQuitHandler(new QuitHandler(){
+                                    @Override
+                                    public void handleQuitRequestWith(QuitEvent e, QuitResponse response) {
+                                        staticScr.dispose();
+                                    }
+                                });
+                                
+                                desk.setPreferencesHandler(new PreferencesHandler(){
+                                    @Override
+                                    public void handlePreferences(PreferencesEvent e) {
+                                        staticScr.showOptions();
+                                    }
+                                });
+
+                                desk.setAboutHandler(new AboutHandler(){
+                                    @Override
+                                    public void handleAbout(AboutEvent e) {
+                                        ScrAbout.run(new DictCore());
+                                    }
+                                });
+                                
+                                desk.setPrintFileHandler(new PrintFilesHandler(){
+                                    @Override
+                                    public void printFiles(PrintFilesEvent e) {
+                                        staticScr.printToPdf();
+                                    }
+                                });
                             } else if (PGTUtil.isWindows && osIntegration) {
                                 s.setIconImage(PGTUtil.polyGlotIcon.getImage());
                             }

@@ -67,7 +67,7 @@ public class WebInterface {
         } catch (MalformedURLException e) {
             throw new MalformedURLException("Server unavailable or not found.");
         } catch (IOException e) {
-            throw new IOException("Update file not found. Please check for updates manually at PolyGlot homepage.");
+            throw new IOException("Update file not found. Please check for updates manually at PolyGlot homepage.", e);
         }
 
         if (xmlText.length() != 0) {

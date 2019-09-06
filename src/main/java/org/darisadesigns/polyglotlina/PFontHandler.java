@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-// TODO: Java 12 upgrade
-//import org.apache.poi.util.IOUtils;
 
 /**
  * Split out from IOHandler due to large portion devoted to handling fonts
@@ -70,10 +68,9 @@ public class PFontHandler {
 
                     tempFile.deleteOnExit();
 
-                    try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                        try (InputStream inputStream = zipFile.getInputStream(fontEntry)) {
-                            // TODO: Java 12 upgrade
-//                            IOUtils.copy(inputStream, out);
+                    try (FileOutputStream os = new FileOutputStream(tempFile)) {
+                        try (InputStream is = zipFile.getInputStream(fontEntry)) {
+                            is.transferTo(os);
                         }
 
                         try {
@@ -317,12 +314,13 @@ public class PFontHandler {
 
                 if (fontFile != null) {
                     try (FileInputStream fontInputStream = new FileInputStream(fontFile)) {
-                        // TODO: Java 12 upgrade
-//                        if (isConFont) {
-//                            core.getPropertiesManager().setCachedFont(IOUtils.toByteArray(fontInputStream));
-//                        } else {
-//                            core.getPropertiesManager().setCachedLocalFont(IOUtils.toByteArray(fontInputStream));
-//                        }
+                        byte[] fontBytes = IOHandler.streamToBytArray(fontInputStream);
+                        
+                        if (isConFont) {
+                            core.getPropertiesManager().setCachedFont(fontBytes);
+                        } else {
+                            core.getPropertiesManager().setCachedLocalFont(fontBytes);
+                        }
                     }
                     byte[] buffer = new byte[1024];
                     try (FileInputStream fis = new FileInputStream(fontFile)) {

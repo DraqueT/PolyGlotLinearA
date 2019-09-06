@@ -71,6 +71,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -86,7 +88,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.util.IOUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -177,8 +178,27 @@ public class IOHandler {
 
     public static byte[] getByteArrayFromFile(File file) throws FileNotFoundException, IOException {
         try (InputStream inputStream = new FileInputStream(file)) {
-            return IOUtils.toByteArray(inputStream);
+            return streamToBytArray(inputStream);
         }
+    }
+    
+    /**
+     * Takes input stream and converts it to a raw byte array
+     * @param is
+     * @return raw byte representation of stream
+     * @throws IOException 
+     */
+    public static byte[] streamToBytArray(InputStream is) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+          buffer.write(data, 0, nRead);
+        }
+
+        return buffer.toByteArray();
     }
     
     /**
@@ -192,7 +212,7 @@ public class IOHandler {
         final File toByteArrayFile = new File(filePath);
         
         try (InputStream inputStream = new FileInputStream(toByteArrayFile)) {
-            ret = IOUtils.toByteArray(inputStream);
+            ret = streamToBytArray(inputStream);
         }
         
         return ret;
@@ -645,7 +665,16 @@ public class IOHandler {
      * @return default path
      */
     public static File getBaseProgramPath() {
-        return new File(".");
+        File ret = new File(System.getProperty("user.dir"));
+        
+//        try {
+//            ret = new File(IOHandler.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+//        } catch (URISyntaxException | IllegalArgumentException e) {
+//            IOHandler.writeErrorLog(e, "Unable to get base program path");
+//        }
+        System.out.println(ret.getAbsolutePath());
+        
+        return ret;
     }
 
     /**
@@ -767,7 +796,7 @@ public class IOHandler {
             while (reversion != null && i < reversionManager.getMaxReversionsCount()) {
                 tmpCore = new DictCore();
                 
-                reversionManager.addVersionToEnd(IOUtils.toByteArray(zipFile.getInputStream(reversion)),
+                reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
                         tmpCore.getLastSaveTime());
                 i++;
                 reversion = zipFile.getEntry(PGTUtil.reversionSavePath
@@ -778,7 +807,7 @@ public class IOHandler {
             reversion = zipFile.getEntry(PGTUtil.dictFileName);
             tmpCore = new DictCore();
             
-            reversionManager.addVersionToEnd(IOUtils.toByteArray(zipFile.getInputStream(reversion)),
+            reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
                         tmpCore.getLastSaveTime());
         }
     }
@@ -861,7 +890,7 @@ public class IOHandler {
                     byte[] sound = null;
 
                     try (InputStream soundStream = zipFile.getInputStream(soundEntry)) {
-                        sound = IOUtils.toByteArray(soundStream);
+                        sound = streamToBytArray(soundStream);
                     } catch (IOException e) {
                         IOHandler.writeErrorLog(e);
                         loadLog += "\nUnable to load sound: " + e.getLocalizedMessage();
@@ -978,9 +1007,7 @@ public class IOHandler {
      */
     public byte[] getUnicodeFontByteArray() throws FileNotFoundException, IOException {
         try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontLocation)) {
-            // TODO: Java 12 upgrade
-//            return IOUtils.toByteArray(localStream);
-            return null;
+            return streamToBytArray(localStream);
         }
     }
 
@@ -994,9 +1021,7 @@ public class IOHandler {
      */
     public byte[] getUnicodeFontItalicByteArray() throws FileNotFoundException, IOException {
         try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontItalicLocation)) {
-            // TODO: Java 12 upgrade
-//            return IOUtils.toByteArray(localStream);
-            return null;
+            return streamToBytArray(localStream);
         }
     }
 
@@ -1102,6 +1127,7 @@ public class IOHandler {
             
             output = getSystemInformation() + "\n" + output;
             
+            System.out.println("Writing error to: " + errorLog.getAbsolutePath());
             writer.write(output);
             writer.close();
         } catch (IOException e) {
