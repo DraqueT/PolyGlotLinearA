@@ -550,7 +550,7 @@ public class DictCore {
 
         // root elements
         Document doc = docBuilder.newDocument();
-        Element rootElement = doc.createElement(PGTUtil.dictionaryXID);
+        Element rootElement = doc.createElement(PGTUtil.DICTIONARY_XID);
         doc.appendChild(rootElement);
 
         // collect XML representation of all dictionary elements
@@ -577,11 +577,11 @@ public class DictCore {
     }
     
     private void writeXMLHeader(Document doc, Element rootElement, Instant saveTime) {
-        Element headerElement = doc.createElement(PGTUtil.pgVersionXID);
+        Element headerElement = doc.createElement(PGTUtil.PGVERSION_XID);
         headerElement.appendChild(doc.createTextNode(version));
         rootElement.appendChild(headerElement);
         
-        headerElement = doc.createElement(PGTUtil.dictionarySaveDate);
+        headerElement = doc.createElement(PGTUtil.DICTIONARY_SAVE_DATE);
         headerElement.appendChild(doc.createTextNode(saveTime.toString()));
         rootElement.appendChild(headerElement);
     }

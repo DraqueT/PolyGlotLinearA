@@ -31,9 +31,11 @@ import org.darisadesigns.polyglotlina.IOHandler;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.darisadesigns.polyglotlina.Java8Bridge;
 
 // TODO: JAVA 12 UPGRADE: Rework this to use the PolyGlot PDF Java 8 module
 // Remember that this should check for Java 8 runnability
@@ -336,35 +338,23 @@ public class ScrPrintToPDF extends PDialog {
             return;
         }
         
-        // TODO: JAVA 12 UPGRADE - MODULES
-//        PExportToPDF export;
-        
-//        try {
-//            export = new PExportToPDF(core, txtSavePath.getText());
-//        } catch (IOException e) {
-//            IOHandler.writeErrorLog(e);
-//            InfoBox.error("Save Error", "Unable to initialize export object: " + e.getMessage(), core.getRootWindow());
-//            return;
-//        }
-//        
-//        export.setCoverImagePath(txtImageLocation.getText());
-//        export.setForewardText(((PTextPane)txtForeword).getNakedText());
-//        export.setPrintConLocal(rootPaneCheckingEnabled);
-//        export.setPrintConLocal(chkConLocal.isSelected());
-//        export.setPrintLocalCon(chkLocalCon.isSelected());
-//        export.setPrintOrtho(chkOrtho.isSelected());
-//        export.setSubTitleText(txtSubtitle.getText());
-//        export.setTitleText(txtTitle.getText());
-//        export.setPrintPageNumber(chkPageNum.isSelected());
-//        export.setPrintGlossKey(chkGloss.isSelected());
-//        export.setPrintGrammar(chkGrammar.isSelected());
-//        export.setPrintWordEtymologies(chkEtymology.isSelected());
-//        export.setPrintAllConjugations(chkPrintConjugations.isSelected());
-        
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try{
-            // TODO: JAVA 12 UPGRADE - MODULES
-//            export.print();
+            Java8Bridge.exportPdf(txtSavePath.getText(), 
+                    txtImageLocation.getText(), 
+                    ((PTextPane)txtForeword).getNakedText(), 
+                    chkConLocal.isSelected(), 
+                    chkLocalCon.isSelected(), 
+                    chkOrtho.isSelected(), 
+                    txtSubtitle.getText(), 
+                    txtTitle.getText(), 
+                    chkPageNum.isSelected(), 
+                    chkGloss.isSelected(), 
+                    chkGrammar.isSelected(), 
+                    chkEtymology.isSelected(), 
+                    chkPrintConjugations.isSelected(),
+                    core);
+
             if (Desktop.isDesktopSupported()) {
                 if (InfoBox.yesNoCancel("Print Success", "PDF successfully printed. Open file now?", this) 
                         == JOptionPane.YES_OPTION) {
@@ -377,11 +367,12 @@ public class ScrPrintToPDF extends PDialog {
             }
             
             this.dispose();
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.error("Save Error", "Unable to print to file: " + e.getMessage(), core.getRootWindow());
+        } finally {
+            setCursor(Cursor.getDefaultCursor());
         }
-        setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnPrintActionPerformed
 
     private void btnSelectImagePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectImagePathActionPerformed

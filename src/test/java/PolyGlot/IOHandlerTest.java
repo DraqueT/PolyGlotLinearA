@@ -96,6 +96,36 @@ public class IOHandlerTest {
     }
     
     @Test
+    public void testGoodConsoleCommand() throws InterruptedException {
+        System.out.println("Testing good console command");
+        String[] result = IOHandler.runAtConsole(new String[]{"java", "--version"});
+        
+        assertTrue(!result[0].isEmpty()); // various versions of Java return every damned thing you can imagine... just test that it's SOMETHING
+        assertTrue(result[1].isEmpty());
+    }
+    
+    @Test
+    public void testBadConsoleCommand() throws InterruptedException {
+        System.out.println("Testing bad console command");
+        String[] result = IOHandler.runAtConsole(new String[]{"WAT", "AM", "COMAND?!"});
+        
+        assertTrue(result[0].isEmpty());
+        assertTrue(!result[1].isEmpty()); // different errors for different systems, but should be SOMETHING
+    }
+    
+    @Test
+    public void testGetTerminalJavaVersion() {
+        System.out.println("getTerminalJavaVersion");
+        assertTrue(!IOHandler.getTerminalJavaVersion().isEmpty());
+    }
+    
+    @Test
+    public void textIsJavaAvailableInTerminal() {
+        System.out.println("isJavaAvailableInTerminal");
+        assertTrue(IOHandler.isJavaAvailableInTerminal());
+    }
+    
+    @Test
     public void testInputStreamToByteArray() throws FileNotFoundException, IOException {
         System.out.println("Testing input stream to byte array");
         byte[] expectedResult = "!@)*\ntest\n".getBytes();

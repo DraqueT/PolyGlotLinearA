@@ -445,27 +445,27 @@ public class ConWord extends DictNode {
     }
     
     public void writeXML(Document doc, Element rootElement) {
-        Element wordNode = doc.createElement(PGTUtil.wordXID);
+        Element wordNode = doc.createElement(PGTUtil.WORD_XID);
 
-            Element wordValue = doc.createElement(PGTUtil.wordIdXID);
+            Element wordValue = doc.createElement(PGTUtil.WORD_ID_XID);
             Integer wordId = this.getId();
             wordValue.appendChild(doc.createTextNode(wordId.toString()));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.localWordXID);
+            wordValue = doc.createElement(PGTUtil.LOCALWORD_XID);
             wordValue.appendChild(doc.createTextNode(this.getLocalWord()));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.conWordXID);
+            wordValue = doc.createElement(PGTUtil.CONWORD_XID);
             wordValue.appendChild(doc.createTextNode(this.getValue()));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordTypeIdXID);
+            wordValue = doc.createElement(PGTUtil.WORD_POS_ID_XID);
             wordValue.appendChild(doc.createTextNode(this.getWordTypeId().toString()));
             wordNode.appendChild(wordValue);
 
             try {
-                wordValue = doc.createElement(PGTUtil.wordProcXID);
+                wordValue = doc.createElement(PGTUtil.WORD_PROC_XID);
                 wordValue
                         .appendChild(doc.createTextNode(this.getPronunciation()));
                 wordNode.appendChild(wordValue);
@@ -474,39 +474,39 @@ public class ConWord extends DictNode {
                 // IOHandler.writeErrorLog(e);
             }
 
-            wordValue = doc.createElement(PGTUtil.wordDefXID);
+            wordValue = doc.createElement(PGTUtil.WORD_DEF_XID);
             wordValue.appendChild(doc.createTextNode(WebInterface.archiveHTML(this.getDefinition())));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordProcOverrideXID);
+            wordValue = doc.createElement(PGTUtil.WORD_PROCOVERRIDE_XID);
             wordValue.appendChild(doc.createTextNode(this.isProcOverride() ? PGTUtil.True : PGTUtil.False));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordAutoDeclenOverrideXID);
+            wordValue = doc.createElement(PGTUtil.WORD_AUTODECLOVERRIDE_XID);
             wordValue.appendChild(doc.createTextNode(this.isOverrideAutoDeclen() ? PGTUtil.True : PGTUtil.False));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordRuleOverrideXID);
+            wordValue = doc.createElement(PGTUtil.WORD_RULEORVERRIDE_XID);
             wordValue.appendChild(doc.createTextNode(this.isRulesOverride() ? PGTUtil.True : PGTUtil.False));
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordClassCollectionXID);
+            wordValue = doc.createElement(PGTUtil.WORD_CLASSCOLLECTION_XID);
             for (Entry<Integer, Integer> entry : this.getClassValues()) {
-                Element classVal = doc.createElement(PGTUtil.wordClassAndValueXID);
+                Element classVal = doc.createElement(PGTUtil.WORD_CLASS_AND_VALUE_XID);
                 classVal.appendChild(doc.createTextNode(entry.getKey() + "," + entry.getValue()));
                 wordValue.appendChild(classVal);
             }
             wordNode.appendChild(wordValue);
 
-            wordValue = doc.createElement(PGTUtil.wordClassTextValueCollectionXID);
+            wordValue = doc.createElement(PGTUtil.WORD_CLASS_TEXT_VAL_COLLECTION_XID);
             for (Entry<Integer, String> entry : this.getClassTextValues()) {
-                Element classVal = doc.createElement(PGTUtil.wordClassTextValueXID);
+                Element classVal = doc.createElement(PGTUtil.WORD_CLASS_TEXT_VAL_XID);
                 classVal.appendChild(doc.createTextNode(entry.getKey() + "," + entry.getValue()));
                 wordValue.appendChild(classVal);
             }
             wordNode.appendChild(wordValue);
             
-            wordValue = doc.createElement(PGTUtil.wordEtymologyNotesXID);
+            wordValue = doc.createElement(PGTUtil.WORD_ETY_NOTES_XID);
             wordValue.appendChild(doc.createTextNode(this.getEtymNotes()));
             wordNode.appendChild(wordValue);
             

@@ -77,7 +77,7 @@ public class CustHandlerFactory {
         doc.getDocumentElement().normalize();
 
         // test for version number in pgd file, set to 0 if none found (pre 0.6)
-        Node versionNode = doc.getDocumentElement().getElementsByTagName(PGTUtil.pgVersionXID).item(0);
+        Node versionNode = doc.getDocumentElement().getElementsByTagName(PGTUtil.PGVERSION_XID).item(0);
         String versionNumber = versionNode == null ? "0" : versionNode.getTextContent();
         int fileVersionHierarchy = core.getVersionHierarchy(versionNumber);
         
@@ -104,7 +104,6 @@ public class CustHandlerFactory {
             boolean blastSave = false;
             boolean blocalWord = false;
             boolean bconWord = false;
-            boolean btype = false;
             boolean btypeId = false;
             boolean bId = false;
             boolean bdef = false;
@@ -150,9 +149,7 @@ public class CustHandlerFactory {
             boolean blangPropLocalLangName = false;
             boolean blangPropAuthCopyright = false;
             boolean bwordClassDefMan = false;
-            boolean bwordClassGenderMan = false;
             boolean bwordClassProcMan = false;
-            boolean bwordClassPlurMan = false;
             boolean bwordClassPattern = false;
             boolean bwordProcOverride = false;
             boolean bdimNode = false;
@@ -230,61 +227,46 @@ public class CustHandlerFactory {
                     String qName, Attributes attributes)
                     throws SAXException {
 
-                if (qName.equalsIgnoreCase(PGTUtil.dictionarySaveDate)) {
+                if (qName.equalsIgnoreCase(PGTUtil.DICTIONARY_SAVE_DATE)) {
                     blastSave = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_XID)) {
                     core.getWordCollection().clear();
                 } else if (qName.equalsIgnoreCase(PGTUtil.proGuideXID)) {
                     proBuffer = new PronunciationNode();
                 } else if (qName.equalsIgnoreCase(PGTUtil.romGuideNodeXID)) {
                     romBuffer = new PronunciationNode();
-                } else if (qName.equalsIgnoreCase(PGTUtil.localWordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.LOCALWORD_XID)) {
                     blocalWord = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.conWordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.CONWORD_XID)) {
                     bconWord = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordTypeXID)) {
-                    btype = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordTypeIdXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_POS_ID_XID)) {
                     btypeId = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordIdXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_ID_XID)) {
                     bId = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordDefXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_DEF_XID)) {
                     bdef = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordPlurXID)) {
-                    // plurality made into declension-deprecated from main screen
-                    declensionMgr.clearBuffer();
-                    bwordPlur = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordEtymologyNotesXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_ETY_NOTES_XID)) {
                     bwordEtymNotes = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordRuleOverrideXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_RULEORVERRIDE_XID)) {
                     bwordRuleOverride = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordClassAndValueXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_CLASS_AND_VALUE_XID)) {
                     bclassVal = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordClassTextValueXID)){
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_CLASS_TEXT_VAL_XID)){
                     bwordClassTextVal = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.fontConXID)) {
                     bfontcon = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.fontLocalXID)) {
                     bfontlocal = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeIdXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_ID_XID)) {
                     bwordClassId = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeNameXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_NAME_XID)) {
                     bwordClassName = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeNotesXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_NOTES_XID)) {
                     bwordClassNotes = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeGlossXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_GLOSS_XID)) {
                     bwordClassGloss = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordProcXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_PROC_XID)) {
                     bpronuncation = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordGenderXID)) {
-                    tmpString = ""; // temp value to store deprecated field
-                    bgender = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderIdXID)) {
-                    bgenderId = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderNameXID)) {
-                    bgenderName = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderNotesXID)) {
-                    bgenderNotes = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.langPropLangNameXID)) {
                     blangName = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.langPropOverrideRegexFont)) {
@@ -304,7 +286,7 @@ public class CustHandlerFactory {
                     blangPropAuthCopyright = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.langPropLocalLangNameXID)) {
                     blangPropLocalLangName = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordAutoDeclenOverrideXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_AUTODECLOVERRIDE_XID)) {
                     bwordoverAutoDec = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.declensionXID)) {
                     // from old versions, declensions are loaded as dimensions of a master declension
@@ -331,17 +313,13 @@ public class CustHandlerFactory {
                     bromActive = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.romGuidePhonXID)) {
                     bromPhon = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordProcOverrideXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_PROCOVERRIDE_XID)) {
                     bwordProcOverride = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typePlurManXID)) {
-                    bwordClassPlurMan = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeProcManXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_PROC_MAN_XID)) {
                     bwordClassProcMan = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeGenderManXID)) {
-                    bwordClassGenderMan = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeDefManXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_DEF_MAN_XID)) {
                     bwordClassDefMan = true;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typePatternXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_PATTERN_XID)) {
                     bwordClassPattern = true;
                 } else if (qName.equalsIgnoreCase(PGTUtil.langPropLocalUniquenessXID)) {
                     blangPropLocalUniqueness = true;
@@ -479,9 +457,9 @@ public class CustHandlerFactory {
             public void endElement(String uri, String localName,
                     String qName) throws SAXException {
 
-                if (qName.equalsIgnoreCase(PGTUtil.dictionarySaveDate)) {
+                if (qName.equalsIgnoreCase(PGTUtil.DICTIONARY_SAVE_DATE)) {
                     blastSave = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_XID)) {
                     ConWord curWord = core.getWordCollection()
                             .getBufferWord();
 
@@ -498,67 +476,17 @@ public class CustHandlerFactory {
                     } catch (Exception e) {
                         throw new SAXException("Word insertion error: " + e.getLocalizedMessage());
                     }
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_XID)) {
                     // insertion for word types is much simpler
                     try {
                         core.getTypes().insert(wCId);
                     } catch (Exception e) {
                         throw new SAXException("Type insertion error: " + e.getLocalizedMessage());
                     }
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderXID)) {
-                    // Deprecated
                 } else if (qName.equalsIgnoreCase(PGTUtil.proGuideXID)) {
                     pronuncMgr.addPronunciation(proBuffer);
                 } else if (qName.equalsIgnoreCase(PGTUtil.romGuideNodeXID)) {
                     romanizationMgr.addPronunciation(romBuffer);
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordGenderXID)) {
-                    // only create property if necessary.
-                    if (tmpString.length() != 0) {
-                        // this uses a slow, heuristic method because it's a one time process
-                        // that is replacing the existing, inexact method with an ID based one
-                        WordClass writeProp = null;
-                        // find gender property
-                        for (WordClass prop : core.getWordPropertiesCollection().getAllWordClasses()) {
-                            if (prop.getValue().equals("Gender")) {
-                                writeProp = prop;
-                                break;
-                            }
-                        }
-
-                        try {
-                            // create gender if doesn't exist
-                            if (writeProp == null) {
-                                core.getWordPropertiesCollection().clear();
-                                core.getWordPropertiesCollection().getBuffer().setValue("Gender");
-                                int id = core.getWordPropertiesCollection().insert();
-                                writeProp = (WordClass) core.getWordPropertiesCollection().getNodeById(id);
-                            }
-
-                            WordClassValue valueWrite = null;
-
-                            for (WordClassValue value : writeProp.getValues()) {
-                                // test against constructed gender string
-                                if (value.getValue().equals(tmpString)) {
-                                    valueWrite = value;
-                                    break;
-                                }
-                            }
-
-                            if (valueWrite == null) {
-                                valueWrite = writeProp.addValue(tmpString);
-                            }
-
-                            ConWord bufferWord = core.getWordCollection().getBufferWord();
-                            bufferWord.setClassValue(writeProp.getId(), valueWrite.getId());
-                            
-                            // when pulling from legacy gender system, apply to all words initially
-                            writeProp.addApplyType(-1);
-                        } catch (Exception e) {
-                            IOHandler.writeErrorLog(e);
-                            warningLog += "\nGender class load error: " + e.getLocalizedMessage();
-                        }
-                    }
-                    bgender = false;
                 } else if (qName.equalsIgnoreCase(PGTUtil.declensionXID)) {
                     DeclensionNode curBuffer = declensionMgr.getBuffer();
 
@@ -578,38 +506,24 @@ public class CustHandlerFactory {
                     }
 
                     declensionMgr.clearBuffer();
-                } else if (qName.equalsIgnoreCase(PGTUtil.localWordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.LOCALWORD_XID)) {
                     blocalWord = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.conWordXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.CONWORD_XID)) {
                     bconWord = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordPlurXID)) {
-                    // plurality now a declension (as it should be)
-                    // special position granted to plurals... fixes awful ID collision error
-
-                    // skip insertion of empty
-                    if (declensionMgr.getBuffer().getValue().trim().length() != 0) {
-                        declensionMgr.getBuffer().setCombinedDimId("," + wId + "," + PGTUtil.wordPlurXID + ",");
-                        declensionMgr.addDeclensionToWord(wId, Integer.MAX_VALUE, declensionMgr.getBuffer());
-                    }
-
-                    declensionMgr.clearBuffer();
-                    bwordPlur = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordTypeXID)) {
-                    btype = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordTypeIdXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_POS_ID_XID)) {
                     btypeId = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordIdXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_ID_XID)) {
                     bId = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordRuleOverrideXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_RULEORVERRIDE_XID)) {
                     bwordRuleOverride = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordClassAndValueXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_CLASS_AND_VALUE_XID)) {
                     bclassVal = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordClassTextValueXID)){
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_CLASS_TEXT_VAL_XID)){
                     core.getWordCollection().getBufferWord().setClassTextValue(ruleIdBuffer, ruleValBuffer);
                     ruleIdBuffer = 0;
                     ruleValBuffer = "";
                     bwordClassTextVal = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordDefXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_DEF_XID)) {
                     // finalize loading of def (if it contains archived HTML elements
                     ConWord curWord = core.getWordCollection().getBufferWord();
                     try {
@@ -621,15 +535,15 @@ public class CustHandlerFactory {
                     
                     curWord.setDefinition(curWord.getDefinition().replaceAll("<br>\\s*[<br>\\s*]+<br>\\s*", ""));
                     bdef = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordEtymologyNotesXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_ETY_NOTES_XID)) {
                     bwordEtymNotes = false;
                 } else if (qName.equalsIgnoreCase(PGTUtil.fontConXID)) {
                     bfontcon = false;
                 } else if (qName.equalsIgnoreCase(PGTUtil.fontLocalXID)) {
                     bfontlocal = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeNameXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_NAME_XID)) {
                     bwordClassName = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeNotesXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_NOTES_XID)) {
                     TypeNode node = core.getTypes().getBufferType();
                     try {
                         node.setNotes(WebInterface.unarchiveHTML(node.getNotes(), core));
@@ -638,27 +552,17 @@ public class CustHandlerFactory {
                         warningLog += "\nProblem loading part of speech note image: " + e.getLocalizedMessage();
                     }
                     bwordClassNotes = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typePlurManXID)) {
-                    bwordClassPlurMan = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeProcManXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_PROC_MAN_XID)) {
                     bwordClassProcMan = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeGenderManXID)) {
-                    bwordClassGenderMan = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeDefManXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_DEF_MAN_XID)) {
                     bwordClassDefMan = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typePatternXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_PATTERN_XID)) {
                     bwordClassPattern = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.typeGlossXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.POS_GLOSS_XID)) {
                     bwordClassGloss = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordProcXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_PROC_XID)) {
                     bpronuncation = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderIdXID)) {
-                    bgenderId = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderNameXID)) {
-                    bgenderName = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.genderNotesXID)) {
-                    bgenderNotes = false;
-                } else if (qName.equalsIgnoreCase(PGTUtil.wordAutoDeclenOverrideXID)) {
+                } else if (qName.equalsIgnoreCase(PGTUtil.WORD_AUTODECLOVERRIDE_XID)) {
                     bwordoverAutoDec = false;
                 } else if (qName.equalsIgnoreCase(PGTUtil.langPropLangNameXID)) {
                     blangName = false;
@@ -898,14 +802,6 @@ public class CustHandlerFactory {
                     ConWord bufferWord = core.getWordCollection().getBufferWord();
                     bufferWord.setValue(bufferWord.getValue()
                             + new String(ch, start, length));
-                } else if (btype) { // THIS IS NOW ONLY FOR LEGACY PGT FILES. NO LONGER SAVED TO XML
-                    ConWord bufferWord = core.getWordCollection().getBufferWord();
-                    try {
-                        bufferWord.setWordTypeId(core.getTypes().findByName(new String(ch, start, length)).getId());
-                    } catch (Exception e) {
-                        IOHandler.writeErrorLog(e);
-                        warningLog += "\nWord type load error: " + e.getLocalizedMessage();
-                    }
                 } else if (btypeId) {
                     ConWord bufferWord = core.getWordCollection().getBufferWord();
                     bufferWord.setWordTypeId(Integer.parseInt(new String(ch, start, length)));
@@ -1053,16 +949,9 @@ public class CustHandlerFactory {
                 } else if (bromPhon) {
                     romBuffer.setPronunciation(romBuffer.getPronunciation()
                             + new String(ch, start, length));
-                } /*else if (bproAutoPop) {
-                    // Removed as of 1.0
-                    propertiesManager.setProAutoPop((new String(ch, start, length).equalsIgnoreCase(PGTUtil.True)));
-                    bproAutoPop = false;
-                }*/ else if (bwordClassProcMan) {
+                } else if (bwordClassProcMan) {
                     core.getTypes().getBufferType().setProcMandatory(new String(ch, start, length).equals(PGTUtil.True));
                     bwordClassProcMan = false;
-                } else if (bwordClassGenderMan) {
-                    //typeCollection.getBufferType().setGenderMandatory(new String(ch, start, length).equals(PGTUtil.True)); // Deprecated
-                    bwordClassGenderMan = false;
                 } else if (bwordClassDefMan) {
                     core.getTypes().getBufferType().setDefMandatory(new String(ch, start, length).equals(PGTUtil.True));
                     bwordClassDefMan = false;

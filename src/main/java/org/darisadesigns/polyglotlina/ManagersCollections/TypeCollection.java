@@ -274,7 +274,7 @@ public class TypeCollection extends DictionaryCollection<TypeNode> {
      * @param rootElement root element of document
      */
     public void writeXML(Document doc, Element rootElement) {
-        Element typeContainer = doc.createElement(PGTUtil.typeCollectionXID);
+        Element typeContainer = doc.createElement(PGTUtil.POS_COLLECTION_XID);
         
         getNodes().forEach((curType) -> {
             curType.writeXML(doc, typeContainer);

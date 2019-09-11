@@ -27,7 +27,6 @@ import org.darisadesigns.polyglotlina.CustomControls.PToDoTree;
 import org.darisadesigns.polyglotlina.CustomControls.PToDoTreeModel;
 import org.darisadesigns.polyglotlina.CustomControls.ToDoTreeNode;
 import org.darisadesigns.polyglotlina.DictCore;
-import org.darisadesigns.polyglotlina.ExcelExport;
 import org.darisadesigns.polyglotlina.IOHandler;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.PGTUtil;
@@ -72,6 +71,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultTreeModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.darisadesigns.polyglotlina.Java8Bridge;
 
 /**
  * Primary window for PolyGlot interface. Main running class that instantiates core and handles other windows/UI.
@@ -572,13 +572,13 @@ public final class ScrMainMenu extends PFrame {
         }
 
         try {
-            ExcelExport.exportExcelDict(fileName, core, 
+            Java8Bridge.exportExcelDict(fileName, core, 
                     InfoBox.actionConfirmation("Excel Export", 
                             "Export all declensions? (Separates parts of speech into individual tabs)", 
                             core.getRootWindow()));
             
             InfoBox.info("Export Status", "Dictionary exported to " + fileName + ".", core.getRootWindow());
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.info("Export Problem", e.getLocalizedMessage(), core.getRootWindow());
         }

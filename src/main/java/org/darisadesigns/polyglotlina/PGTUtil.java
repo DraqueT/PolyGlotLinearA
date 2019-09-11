@@ -28,6 +28,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -43,50 +44,39 @@ import org.darisadesigns.polyglotlina.Screens.ScrQuizGenDialog;
  * @author draque
  */
 public class PGTUtil {
-    public static final String dictionaryXID = "dictionary";
-    public static final String pgVersionXID = "PolyGlotVer";
-    public static final String dictionarySaveDate = "DictSaveDate";
+    private static File java8BridgeLocation = null;
+    public static final String DICTIONARY_XID = "dictionary";
+    public static final String PGVERSION_XID = "PolyGlotVer";
+    public static final String DICTIONARY_SAVE_DATE = "DictSaveDate";
     
     // properties on words
-    public static final String lexiconXID = "lexicon";
-    public static final String wordXID = "word";
-    public static final String localWordXID = "localWord";
-    public static final String conWordXID = "conWord";
-    public static final String wordTypeXID = "wordType"; // LEGACY VALUE
-    public static final String wordTypeIdXID = "wordTypeId";
-    public static final String wordGenderXID = "wordGender"; // LEGACY VALUE
-    public static final String wordIdXID = "wordId";
-    public static final String wordPlurXID = "wordPlural"; // LEGACY VALUE
-    public static final String wordProcOverrideXID = "wordProcOverride";
-    public static final String wordDefXID = "definition";
-    public static final String wordAutoDeclenOverrideXID = "autoDeclOverride";
-    public static final String wordProcXID = "pronunciation";
-    public static final String wordRuleOverrideXID = "wordRuleOverride";
-    public static final String wordClassCollectionXID = "wordClassCollection";
-    public static final String wordClassAndValueXID = "wordClassification";
-    public static final String wordClassTextValueCollectionXID = "wordClassTextValueCollection";
-    public static final String wordClassTextValueXID = "wordClassTextValue";
-    public static final String wordEtymologyNotesXID = "wordEtymologyNotes";
+    public static final String LEXICON_XID = "lexicon";
+    public static final String WORD_XID = "word";
+    public static final String LOCALWORD_XID = "localWord";
+    public static final String CONWORD_XID = "conWord";
+    public static final String WORD_POS_ID_XID = "wordTypeId";
+    public static final String WORD_ID_XID = "wordId";
+    public static final String WORD_PROCOVERRIDE_XID = "wordProcOverride";
+    public static final String WORD_DEF_XID = "definition";
+    public static final String WORD_AUTODECLOVERRIDE_XID = "autoDeclOverride";
+    public static final String WORD_PROC_XID = "pronunciation";
+    public static final String WORD_RULEORVERRIDE_XID = "wordRuleOverride";
+    public static final String WORD_CLASSCOLLECTION_XID = "wordClassCollection";
+    public static final String WORD_CLASS_AND_VALUE_XID = "wordClassification";
+    public static final String WORD_CLASS_TEXT_VAL_COLLECTION_XID = "wordClassTextValueCollection";
+    public static final String WORD_CLASS_TEXT_VAL_XID = "wordClassTextValue";
+    public static final String WORD_ETY_NOTES_XID = "wordEtymologyNotes";
 
     // properties for types/parts of speech
-    public static final String typeCollectionXID = "partsOfSpeech";
-    public static final String typeXID = "class";
-    public static final String typeNameXID = "className";
-    public static final String typeIdXID = "classId";
-    public static final String typeNotesXID = "classNotes";
-    public static final String typeGenderManXID = "genderMandatoryClass";
-    public static final String typeProcManXID = "pronunciationMandatoryClass";
-    public static final String typePlurManXID = "pluralityMandatoryClass";
-    public static final String typeDefManXID = "definitionMandatoryClass";
-    public static final String typePatternXID = "classPattern";
-    public static final String typeGlossXID = "classGloss";
-
-    // properties for genders DEPRECATED -->>
-    public static final String genderXID = "gender";
-    public static final String genderNameXID = "genderName";
-    public static final String genderIdXID = "genderId";
-    public static final String genderNotesXID = "genderNotes";
-    // <-- DEPRECATED
+    public static final String POS_COLLECTION_XID = "partsOfSpeech";
+    public static final String POS_XID = "class";
+    public static final String POS_NAME_XID = "className";
+    public static final String POS_ID_XID = "classId";
+    public static final String POS_NOTES_XID = "classNotes";
+    public static final String POS_PROC_MAN_XID = "pronunciationMandatoryClass";
+    public static final String POS_DEF_MAN_XID = "definitionMandatoryClass";
+    public static final String POS_PATTERN_XID = "classPattern";
+    public static final String POS_GLOSS_XID = "classGloss";
 
     // language properties
     public static final String langPropertiesXID = "languageProperties";
@@ -240,6 +230,17 @@ public class PGTUtil {
     public static final String optionsReversionsCount = "OptionsReversionCount";
     public static final String optionsToDoDividerLocation = "ToDoDividerLocation";
 
+    // Java 8 bridge constants
+    public static final String JAVA8_JAVA_COMMAND = "java";
+    public static final String JAVA8_JAR_ARG = "-jar";
+    public static final String JAVA8_VERSION_ARG = "--version";
+    public static final String JAVA8_BRIDGERESOURCE = "/assets/org/DarisaDesigns/java_8_bridge.zip";
+    public static final String JAVA8_JAR = "PolyGlot_J8_Bridge.jar";
+    public static final String JAVA8_JAR_FOLDER = "dist";
+    public static final String JAVA8_PDFCOMMAND = "pdf-export";
+    public static final String JAVA8_EXCELTOCVSCOMMAND = "excel-to-cvs";
+    public static final String JAVA8_EXPORTTOEXCELCOMMAND = "export-to-excel";
+    
     // string constants
     public static final String dictFileName = "PGDictionary.xml";
     public static final String conFontFileName = "conLangFont";
@@ -256,7 +257,7 @@ public class PGTUtil {
     public static final String grammarSoundSavePath = "grammarSounds/";
     public static final String reversionSavePath = "reversion/";
     public static final String reversionBaseFileName = "reversionXMLFile";
-    public static final String errorLogFile = "error_log.log";
+    public static final String errorLogFile = "PolyGlot_error_log.log";
     public static final String emptyFile = "<EMPTY>";
     public static final String tempFile = "xxTEMPPGTFILExx";
     public static final String polyGlotFont = "PolyGlot";
@@ -527,5 +528,18 @@ public class PGTUtil {
         if (screenSize.getWidth() < location.x || screenSize.getHeight() < location.y) {
             w.setLocationRelativeTo(null);
         }
+    }
+    
+    /**
+     * Gets Java8 bridge class location. Caches value.
+     * @return 
+     * @throws java.io.IOException 
+     */
+    public static File getJava8BridgeLocation() throws IOException {
+        if (java8BridgeLocation == null || !java8BridgeLocation.exists()) {
+            java8BridgeLocation = Java8Bridge.getNewJavaBridgeLocation();
+        }
+        
+        return java8BridgeLocation;
     }
 }

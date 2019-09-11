@@ -50,13 +50,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.ProcessBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,10 +75,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -172,7 +175,7 @@ public class IOHandler {
             throw new IOException("This is not yet implemented for OS: " + OS
                     + ". Please open readme.html in the application directory");
         }
-        
+
         return uri;
     }
 
@@ -181,12 +184,13 @@ public class IOHandler {
             return streamToBytArray(inputStream);
         }
     }
-    
+
     /**
      * Takes input stream and converts it to a raw byte array
+     *
      * @param is
      * @return raw byte representation of stream
-     * @throws IOException 
+     * @throws IOException
      */
     public static byte[] streamToBytArray(InputStream is) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -195,14 +199,15 @@ public class IOHandler {
         byte[] data = new byte[16384];
 
         while ((nRead = is.read(data, 0, data.length)) != -1) {
-          buffer.write(data, 0, nRead);
+            buffer.write(data, 0, nRead);
         }
 
         return buffer.toByteArray();
     }
-    
+
     /**
      * Used for snagging cachable versions of files
+     *
      * @param filePath path of file to fetch as byte array
      * @return byte array of file at given path
      * @throws java.io.FileNotFoundException
@@ -210,14 +215,14 @@ public class IOHandler {
     public static byte[] getFileByteArray(String filePath) throws FileNotFoundException, IOException {
         byte[] ret;
         final File toByteArrayFile = new File(filePath);
-        
+
         try (InputStream inputStream = new FileInputStream(toByteArrayFile)) {
             ret = streamToBytArray(inputStream);
         }
-        
+
         return ret;
     }
-    
+
     /**
      * Given file name, returns appropriate cust handler
      *
@@ -248,9 +253,11 @@ public class IOHandler {
 
         return ret;
     }
-    
+
     /**
-     * Creates a custhandler object from a reversion byte array of a language state
+     * Creates a custhandler object from a reversion byte array of a language
+     * state
+     *
      * @param byteArray byte array containing XML of language state
      * @param _core dictionary core
      * @return new custhandler class
@@ -299,17 +306,18 @@ public class IOHandler {
         File file = new File(fullPath);
         return file.getName();
     }
-    
+
     /**
      * Deletes options file
-     * @param core 
+     *
+     * @param core
      */
     public static void deleteIni(DictCore core) {
-        File f = new File(core.getWorkingDirectory() + PGTUtil.polyGlotIni);        
+        File f = new File(core.getWorkingDirectory() + PGTUtil.polyGlotIni);
         if (!f.exists()) {
             return;
         }
-        
+
         try {
             f.delete();
         } catch (Exception e) {
@@ -337,7 +345,7 @@ public class IOHandler {
         try (BufferedReader br = new BufferedReader(new FileReader(
                 core.getWorkingDirectory() + PGTUtil.polyGlotIni))) {
             String loadProblems = "";
-            
+
             for (String line; (line = br.readLine()) != null;) {
                 String[] bothVal = line.split("=");
 
@@ -411,7 +419,7 @@ public class IOHandler {
                         loadProblems += "Unrecognized value: " + bothVal[0] + " in PolyGlot.ini." + "\n";
                 }
             }
-            
+
             if (!loadProblems.isEmpty()) {
                 throw new Exception("Problems loading ini file: \n" + loadProblems);
             }
@@ -436,13 +444,13 @@ public class IOHandler {
             }
         }
     }
-    
-    public static void parseHandlerByteArray(byte[] reversion, CustHandler _handler) 
+
+    public static void parseHandlerByteArray(byte[] reversion, CustHandler _handler)
             throws ParserConfigurationException, IOException, SAXException {
         parseHandlerInternal(new ByteArrayInputStream(reversion), _handler);
     }
-    
-    private static void parseHandlerInternal(InputStream stream, CustHandler _handler) 
+
+    private static void parseHandlerInternal(InputStream stream, CustHandler _handler)
             throws ParserConfigurationException, SAXException, IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
@@ -476,13 +484,13 @@ public class IOHandler {
         return test == 0x504b0304;
     }
 
-    public static void writeFile(String _fileName, Document doc, DictCore core, Instant saveTime) 
+    public static void writeFile(String _fileName, Document doc, DictCore core, Instant saveTime)
             throws IOException, TransformerException {
         File finalFile = new File(_fileName);
         String writeLog = "";
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
-        
+
         try (StringWriter writer = new StringWriter()) {
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
 
@@ -500,15 +508,15 @@ public class IOHandler {
                     out.write(xmlData, 0, xmlData.length);
 
                     out.closeEntry();
-                    
-                    writeLog += PFontHandler.writeFont(out, 
-                            core.getPropertiesManager().getFontCon(), 
+
+                    writeLog += PFontHandler.writeFont(out,
+                            core.getPropertiesManager().getFontCon(),
                             core.getPropertiesManager().getCachedFont(),
                             core,
                             true);
-                    
-                    writeLog += PFontHandler.writeFont(out, 
-                            core.getPropertiesManager().getFontLocal(), 
+
+                    writeLog += PFontHandler.writeFont(out,
+                            core.getPropertiesManager().getFontLocal(),
                             core.getPropertiesManager().getCachedLocalFont(),
                             core,
                             false);
@@ -538,7 +546,7 @@ public class IOHandler {
             } catch (IOException ex) {
                 throw new IOException("Unable to save file: " + ex.getMessage());
             }
-            
+
             core.getReversionManager().addVersion(xmlData, saveTime);
         }
 
@@ -546,18 +554,18 @@ public class IOHandler {
             InfoBox.warning("File Save Issues", "Problems encountered when saving file " + _fileName + writeLog, null);
         }
     }
-    
+
     private static String writePriorStatesToArchive(ZipOutputStream out, DictCore core) throws IOException {
         String writeLog = "";
         List<ReversionNode> reversionList = core.getReversionManager().getReversionList();
-        
+
         try {
             out.putNextEntry(new ZipEntry(PGTUtil.reversionSavePath));
 
             for (Integer i = 0; i < reversionList.size(); i++) {
                 ReversionNode node = reversionList.get(i);
-                
-                out.putNextEntry(new ZipEntry(PGTUtil.reversionSavePath + PGTUtil.reversionBaseFileName 
+
+                out.putNextEntry(new ZipEntry(PGTUtil.reversionSavePath + PGTUtil.reversionBaseFileName
                         + i.toString()));
                 out.write(node.value);
                 out.closeEntry();
@@ -565,10 +573,10 @@ public class IOHandler {
         } catch (IOException e) {
             throw new IOException("Unable to create reversion files.");
         }
-        
+
         return writeLog;
     }
-    
+
     private static String writeLogoNodesToArchive(ZipOutputStream out, DictCore core) {
         String writeLog = "";
         List<LogoNode> logoNodes = core.getLogoCollection().getAllLogos();
@@ -593,10 +601,10 @@ public class IOHandler {
                 writeLog += "\nUnable to save Logographs: " + e.getLocalizedMessage();
             }
         }
-        
+
         return writeLog;
     }
-    
+
     private static String writeWavToArchive(ZipOutputStream out, DictCore core) {
         String writeLog = "";
         Map<Integer, byte[]> grammarSoundMap = core.getGrammarManager().getSoundMap();
@@ -628,7 +636,7 @@ public class IOHandler {
         }
         return writeLog;
     }
-    
+
     private static String writeImagesToArchive(ZipOutputStream out, DictCore core) {
         String writeLog = "";
         List<ImageNode> imageNodes = core.getImageCollection().getAllImages();
@@ -666,14 +674,14 @@ public class IOHandler {
      */
     public static File getBaseProgramPath() {
         File ret = new File(System.getProperty("user.dir"));
-        
+
 //        try {
 //            ret = new File(IOHandler.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 //        } catch (URISyntaxException | IllegalArgumentException e) {
 //            IOHandler.writeErrorLog(e, "Unable to get base program path");
 //        }
         System.out.println(ret.getAbsolutePath());
-        
+
         return ret;
     }
 
@@ -777,9 +785,10 @@ public class IOHandler {
             }
         }
     }
-    
+
     /**
      * Loads all reversion XML files from polyglot archive
+     *
      * @param reversionManager reversion manager to load to
      * @param fileName full path of polyglot archive
      * @throws IOException on read error
@@ -789,26 +798,26 @@ public class IOHandler {
         try (ZipFile zipFile = new ZipFile(fileName)) {
             Integer i = 0;
             DictCore tmpCore;
-            
+
             ZipEntry reversion = zipFile.getEntry(PGTUtil.reversionSavePath
                     + PGTUtil.reversionBaseFileName + i.toString());
-            
+
             while (reversion != null && i < reversionManager.getMaxReversionsCount()) {
                 tmpCore = new DictCore();
-                
+
                 reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
                         tmpCore.getLastSaveTime());
                 i++;
                 reversion = zipFile.getEntry(PGTUtil.reversionSavePath
                         + PGTUtil.reversionBaseFileName + i.toString());
             }
-            
+
             // remember to load latest state in addition to all prior ones
             reversion = zipFile.getEntry(PGTUtil.dictFileName);
             tmpCore = new DictCore();
-            
+
             reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
-                        tmpCore.getLastSaveTime());
+                    tmpCore.getLastSaveTime());
         }
     }
 
@@ -842,14 +851,15 @@ public class IOHandler {
             }
         }
     }
-    
+
     /**
      * Exports Charis unicode font to specified location
+     *
      * @param exportPath full export path
      * @throws IOException on failure
      */
     public static void exportCharisFont(String exportPath) throws IOException {
-        try (InputStream fontStream = IOHandler.class.getResourceAsStream(PGTUtil.UnicodeFontLocation)){
+        try (InputStream fontStream = IOHandler.class.getResourceAsStream(PGTUtil.UnicodeFontLocation)) {
             byte[] buffer = new byte[fontStream.available()];
             fontStream.read(buffer);
 
@@ -940,7 +950,7 @@ public class IOHandler {
 
             if (!testCanWrite(core.getWorkingDirectory() + PGTUtil.polyGlotIni)) {
                 throw new IOException("Unable to save settings. Polyglot does not have permission to write to folder: "
-                        + core.getWorkingDirectory() 
+                        + core.getWorkingDirectory()
                         + ". This is most common when running from Program Files in Windows.");
             }
 
@@ -978,20 +988,20 @@ public class IOHandler {
             }
             f0.write(nextLine + newLine);
 
-            nextLine = PGTUtil.optionsAutoResize + "=" 
+            nextLine = PGTUtil.optionsAutoResize + "="
                     + (opMan.isAnimateWindows() ? PGTUtil.True : PGTUtil.False);
             f0.write(nextLine + newLine);
 
             nextLine = PGTUtil.optionsMenuFontSize + "=" + Double.toString(opMan.getMenuFontSize());
             f0.write(nextLine + newLine);
-            
+
             nextLine = PGTUtil.optionsNightMode + "="
                     + (opMan.isNightMode() ? PGTUtil.True : PGTUtil.False);
             f0.write(nextLine + newLine);
-            
+
             nextLine = PGTUtil.optionsReversionsCount + "=" + opMan.getMaxReversionCount();
             f0.write(nextLine + newLine);
-            
+
             nextLine = PGTUtil.optionsToDoDividerLocation + "=" + opMan.getToDoBarPosition();
             f0.write(nextLine + newLine);
         }
@@ -1046,49 +1056,55 @@ public class IOHandler {
 
         return ret;
     }
-    
+
     /**
-     * Returns deepest directory from given path (truncating non-directory files from the end)
+     * Returns deepest directory from given path (truncating non-directory files
+     * from the end)
+     *
      * @param path path to fetch directory from
-     * @return File representing directory, null if unable to capture directory path for any reason
+     * @return File representing directory, null if unable to capture directory
+     * path for any reason
      */
     public static File getDirectoryFromPath(String path) {
         File ret = new File(path);
-        
+
         if (ret.exists()) {
             while (ret != null && ret.exists() && !ret.isDirectory()) {
                 ret = ret.getParentFile();
             }
         }
-        
+
         if (!ret.exists()) {
             ret = null;
         }
-        
+
         return ret;
     }
-    
+
     /**
      * Wraps File so that I can avoid importing it elsewhere in code
+     *
      * @param path path to file
      * @return file
      */
     public static File getFileFromPath(String path) {
         return new File(path);
     }
-    
+
     /**
      * Writes to the PolyGlot error log file
-     * @param exception 
+     *
+     * @param exception
      */
     public static void writeErrorLog(Throwable exception) {
         writeErrorLog(exception, "");
     }
-    
+
     /**
      * Writes to the PolyGlot error log file
-     * @param exception 
-     * @param comment 
+     *
+     * @param exception
+     * @param comment
      */
     public static void writeErrorLog(Throwable exception, String comment) {
         String errorMessage = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now());
@@ -1097,36 +1113,36 @@ public class IOHandler {
         rootCause = rootCause == null ? exception : rootCause;
         errorMessage += "\n" + ExceptionUtils.getStackTrace(rootCause);
         BufferedWriter writer;
-        
+
         if (!comment.isEmpty()) {
             errorMessage = comment + ":\n" + errorMessage;
         }
-        
+
         File errorLog = new File(PGTUtil.errorLogFile);
-        
+
         try {
             String output;
-            
+
             if (errorLog.exists()) {
                 Scanner logScanner = new Scanner(errorLog).useDelimiter("\\Z");
                 String contents = logScanner.hasNext() ? logScanner.next() : "";
-                
+
                 writer = new BufferedWriter(new FileWriter(errorLog));
                 int length = contents.length();
                 int newLength = length + errorMessage.length();
-                
+
                 if (newLength > PGTUtil.maxLogCharacters) {
                     contents = contents.substring(newLength - PGTUtil.maxLogCharacters);
                 }
-                
+
                 output = contents + errorMessage + "\n";
             } else {
                 writer = new BufferedWriter(new FileWriter(errorLog));
                 output = errorMessage + "\n";
             }
-            
+
             output = getSystemInformation() + "\n" + output;
-            
+
             System.out.println("Writing error to: " + errorLog.getAbsolutePath());
             writer.write(output);
             writer.close();
@@ -1136,45 +1152,182 @@ public class IOHandler {
             // IOHandler.writeErrorLog(e);
         }
     }
-    
+
     /**
      * Gets system information in human readable format
+     *
      * @return system information
      */
     public static String getSystemInformation() {
         List<String> attributes = Arrays.asList("java.version",
-            "java.vendor",
-            "java.vendor.url",
-            "java.vm.specification.version",
-            "java.vm.specification.name",
-            "java.vm.version",
-            "java.vm.vendor",
-            "java.vm.name",
-            "java.specification.version",
-            "java.specification.vendor",
-            "java.specification.name",
-            "java.class.version",
-            "java.ext.dirs",
-            "os.name",
-            "os.arch",
-            "os.version");
+                "java.vendor",
+                "java.vendor.url",
+                "java.vm.specification.version",
+                "java.vm.specification.name",
+                "java.vm.version",
+                "java.vm.vendor",
+                "java.vm.name",
+                "java.specification.version",
+                "java.specification.vendor",
+                "java.specification.name",
+                "java.class.version",
+                "java.ext.dirs",
+                "os.name",
+                "os.arch",
+                "os.version");
         String ret = "";
-        
+
         for (String attribute : attributes) {
             ret += attribute + " : " + System.getProperty(attribute) + "\n";
         }
-        
+
         return ret;
     }
-    
+
     public static String getErrorLog() throws FileNotFoundException {
         String ret = "";
         File errorLog = new File(PGTUtil.errorLogFile);
-        
+
         if (errorLog.exists()) {
             Scanner logScanner = new Scanner(errorLog).useDelimiter("\\Z");
             ret = logScanner.hasNext() ? logScanner.next() : "";
         }
         return ret;
+    }
+
+    /**
+     * Unzips given archive to destination
+     *
+     * @param archive
+     * @param destination
+     * @throws java.io.IOException If target archive, location does not exist,
+     * target is not a recognized format, or on un-packaging error
+     */
+    public static void unzipToLocation(File archive, Path destination) throws IOException {
+        if (!archive.exists()) {
+            throw new IOException("File: " + archive.getAbsolutePath() + " does not exist.");
+        } else if (isFileZipArchive(archive.getAbsolutePath())) {
+            try (ZipFile file = new ZipFile(archive)) {
+                FileSystem fileSystem = FileSystems.getDefault();
+                Enumeration<? extends ZipEntry> entries = file.entries();
+
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+
+                    if (entry.isDirectory()) {
+                        Files.createDirectories(fileSystem.getPath(destination + File.separator + entry.getName()));
+                    } else {
+                        InputStream is = file.getInputStream(entry);
+                        BufferedInputStream bis = new BufferedInputStream(is);
+                        String uncompressedFileName = destination + File.separator + entry.getName();
+                        Path uncompressedFilePath = fileSystem.getPath(uncompressedFileName);
+                        Files.createFile(uncompressedFilePath);
+                        try (FileOutputStream fileOutput = new FileOutputStream(uncompressedFileName)) {
+                            while (bis.available() > 0) {
+                                fileOutput.write(bis.read());
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            throw new IOException("File: " + archive.getAbsolutePath() + " is not an archive.");
+        }
+    }
+
+    /**
+     * Unzips an internal resource to a targeted path.Does not check header.
+     *
+     * @param internalPath Path to internal zipped resource
+     * @param target destination to unzip to
+     * @throws java.io.IOException
+     */
+    public static void unzipResourceToDir(String internalPath, Path target) throws IOException {
+        InputStream fin = IOHandler.class.getResourceAsStream(internalPath);
+        try (ZipInputStream zin = new ZipInputStream(fin)) {
+            ZipEntry ze;
+            while ((ze = zin.getNextEntry()) != null) {
+                File extractTo = new File(target + File.separator + ze.getName());
+                if (ze.isDirectory()) {
+                    extractTo.mkdir();
+                } else {
+                    try (FileOutputStream out = new FileOutputStream(extractTo)) {
+                        int  nRead;
+                        byte[] data = new byte[16384];
+                        
+                        while ((nRead = zin.read(data, 0, data.length)) != -1) {
+                            out.write(data, 0, nRead);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Runs a command at the console, returning informational and error output.
+     *
+     * @param arguments command to run as [0], with arguments following
+     * @return String array with two entries. [0] = Output, [1] = Error Output
+     * @throws InterruptedException
+     */
+    public static String[] runAtConsole(String[] arguments) throws InterruptedException {
+        String output = "";
+        String error = "";
+
+        try {
+            Process p = new ProcessBuilder(arguments).start();
+            System.out.println(arguments);
+
+            // get general output
+            InputStream is = p.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output += line;
+            }
+
+            // get error output
+            is = p.getErrorStream();
+            reader = new BufferedReader(new InputStreamReader(is));
+            while ((line = reader.readLine()) != null) {
+                error += line;
+            }
+        } catch (IOException e) {
+            error = e.getLocalizedMessage();
+        }
+
+        return new String[]{output, error};
+    }
+
+    /**
+     * Tests whether Java is available at the system/terminal level
+     *
+     * @return current version of Java, or blank if none available
+     */
+    public static String getTerminalJavaVersion() {
+        String ret = "";
+        String[] command = {PGTUtil.JAVA8_JAVA_COMMAND, PGTUtil.JAVA8_VERSION_ARG};
+        try {
+            String[] result = runAtConsole(command);
+
+            // only return result if no error
+            if (result[1].isEmpty()) {
+                ret = result[0];
+            }
+        } catch (InterruptedException e) {
+            writeErrorLog(e, "Unable to run terminal command: " + Arrays.toString(command));
+        }
+
+        return ret;
+    }
+
+    /**
+     * Tests whether Java can be called at the terminal
+     *
+     * @return
+     */
+    public static boolean isJavaAvailableInTerminal() {
+        return !getTerminalJavaVersion().isEmpty();
     }
 }

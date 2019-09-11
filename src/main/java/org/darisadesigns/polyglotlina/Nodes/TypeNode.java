@@ -119,34 +119,34 @@ public class TypeNode extends DictNode {
     }
 
     public void writeXML(Document doc, Element rootElement) {
-        Element wordNode = doc.createElement(PGTUtil.typeXID);
+        Element wordNode = doc.createElement(PGTUtil.POS_XID);
         
-        Element wordValue = doc.createElement(PGTUtil.typeIdXID);
+        Element wordValue = doc.createElement(PGTUtil.POS_ID_XID);
         Integer wordId = this.getId();
         wordValue.appendChild(doc.createTextNode(wordId.toString()));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typeNameXID);
+        wordValue = doc.createElement(PGTUtil.POS_NAME_XID);
         wordValue.appendChild(doc.createTextNode(this.getValue()));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typeNotesXID);
+        wordValue = doc.createElement(PGTUtil.POS_NOTES_XID);
         wordValue.appendChild(doc.createTextNode(WebInterface.archiveHTML(this.getNotes())));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typeDefManXID);
+        wordValue = doc.createElement(PGTUtil.POS_DEF_MAN_XID);
         wordValue.appendChild(doc.createTextNode(this.isDefMandatory() ? PGTUtil.True : PGTUtil.False));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typeProcManXID);
+        wordValue = doc.createElement(PGTUtil.POS_PROC_MAN_XID);
         wordValue.appendChild(doc.createTextNode(this.isProcMandatory() ? PGTUtil.True : PGTUtil.False));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typePatternXID);
+        wordValue = doc.createElement(PGTUtil.POS_PATTERN_XID);
         wordValue.appendChild(doc.createTextNode(this.getPattern()));
         wordNode.appendChild(wordValue);
 
-        wordValue = doc.createElement(PGTUtil.typeGlossXID);
+        wordValue = doc.createElement(PGTUtil.POS_GLOSS_XID);
         wordValue.appendChild(doc.createTextNode(this.getGloss()));
         wordNode.appendChild(wordValue);
         

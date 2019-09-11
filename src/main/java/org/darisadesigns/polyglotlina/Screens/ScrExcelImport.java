@@ -351,12 +351,14 @@ public class ScrExcelImport extends PDialog {
      * @param _core the dictionary core
      * @param _parent main menu form
      */
-    public static void run(DictCore _core, ScrMainMenu _parent) {
+    public static ScrExcelImport run(DictCore _core, ScrMainMenu _parent) {
         ScrExcelImport s = new ScrExcelImport(_core, _parent);
 
         s.setModal(true);
         s.toFront();
         s.setVisible(true);
+        
+        return s;
     }
 
     private void browseFile() {
@@ -394,10 +396,6 @@ public class ScrExcelImport extends PDialog {
                 dispose();
                 parent.openLexicon(true);
             }
-            // TODO: JAVA 12 UPGRADE: make custom exception type to catch here
-//        } catch (InvalidFormatException e) {
-//            IOHandler.writeErrorLog(e);
-//            InfoBox.warning("Unrecognized File Type", e.getLocalizedMessage(), core.getRootWindow());
         } catch (NumberFormatException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.error("Import Error", "All column fields and sheet field must contain "
@@ -408,7 +406,6 @@ public class ScrExcelImport extends PDialog {
                     + ".\n Check to make certain that column mappings are correct "
                     + "(nothing above max cell value) and that the file is not corrupt:\n"
                     + e.getLocalizedMessage(), this);
-            //e.printStackTrace();
         }
     }
 

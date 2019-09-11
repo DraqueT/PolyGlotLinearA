@@ -60,7 +60,7 @@ public class ReversionNode implements Comparable<ReversionNode> {
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 Document tmpDoc = builder.parse(new ByteArrayInputStream(value));
 
-                Node saveNode = tmpDoc.getElementsByTagName(PGTUtil.dictionarySaveDate).item(0);
+                Node saveNode = tmpDoc.getElementsByTagName(PGTUtil.DICTIONARY_SAVE_DATE).item(0);
                 saveTime = Instant.parse(saveNode.getTextContent());
             } else {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());

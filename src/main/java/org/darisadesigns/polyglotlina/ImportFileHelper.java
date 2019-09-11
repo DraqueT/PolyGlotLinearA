@@ -24,29 +24,18 @@ import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.Nodes.WordClassValue;
 import org.darisadesigns.polyglotlina.Nodes.WordClass;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-// TODO: Java 12 upgrade
-//import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-//import org.apache.poi.openxml4j.opc.OPCPackage;
-//import org.apache.poi.ss.usermodel.Cell;
-//import org.apache.poi.ss.usermodel.Row;
-//import org.apache.poi.ss.usermodel.Sheet;
-//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-//import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+import org.darisadesigns.polyglotlina.CustomControls.InfoBox;
 
 public class ImportFileHelper {
 
@@ -90,44 +79,24 @@ public class ImportFileHelper {
      * @throws Exception
      */
     public void importFile(String inputFile, Integer sheetNum) throws Exception {
-        // TODO: JAVA 12 - consider alternative to supercsv
         if (inputFile.endsWith("xls")
                 || inputFile.endsWith("xlsx")
                 || inputFile.endsWith("xlsm")) {
-            // TODO: JAVA 12 upgrade 
-//            importExcel(inputFile, sheetNum);
+            importExcel(inputFile, sheetNum);
         } else if (inputFile.endsWith("csv")
                 || inputFile.endsWith("txt")) {
             importCSV(inputFile, format);
         } else {
+            InfoBox.warning("Unrecognized Type", "Unrecognized type. Attempting to import as CSV", null);
             importCSV(inputFile, format);
-            // TODO: JAVA 12 UPGRADE
-//            throw new InvalidFormatException("Unrecognized file type for file: "
-//                    + inputFile + ". Defaulting to CSV functionality.");
         }
     }
 
-    // TODO: Java 12 upgrade
-//    private void importExcel(String inputFile, Integer sheetNum) throws Exception {
-//        XSSFWorkbook wb;
-//        Sheet mySheet;
-//        // TODO: JAVA 12 Upgrade - clean this mess up if it works (try should be double commented)
-//        //try (InputStream myFile = new FileInputStream(inputFile)) { // OPCPackage.open(new File(filePath))
-//            // TODO: JAVA 12 for some reason it will not recognize WorkbookFactory or Workbook, whether they're imported from poi or poi.ooxml...
-//            wb = XSSFWorkbookFactory.create(OPCPackage.open(new File(inputFile)));
-//            mySheet = ((XSSFWorkbook)wb).getSheetAt(sheetNum);
-//            Iterator<Row> rowIterator = mySheet.iterator();
-//
-//            // if first row is labels, skip
-//            if (bFirstLineLabels && rowIterator.hasNext()) {
-//                rowIterator.next();
-//            }
-//
-//            while (rowIterator.hasNext()) {
-//                processWordRow(rowIterator.next());
-//            }
-//        //}
-//    }
+    private void importExcel(String inputFile, int sheetNum) throws Exception {
+        File csvFile = Java8Bridge.excelToCvs(inputFile, sheetNum);
+        quoteChar= "\"";
+        importCSV(csvFile.getAbsolutePath(), CSVFormat.EXCEL);
+    }
 
     private void importCSV(String inputFile, CSVFormat format) throws Exception {
         if (!quoteChar.isEmpty()) {
