@@ -45,7 +45,7 @@ public class PCheckBox extends JCheckBox implements MouseListener {
         core = _core == null ? new DictCore() : _core;
         
         float fontSize = (float)core.getOptionsManager().getMenuFontSize();
-        super.setFont(PGTUtil.PMenuFont.deriveFont(fontSize));
+        super.setFont(PGTUtil.MENU_FONT.deriveFont(fontSize));
         
         setupListeners();
     }
@@ -63,7 +63,7 @@ public class PCheckBox extends JCheckBox implements MouseListener {
         Color hover = core.getVisualStyleManager().getCheckBoxHover(enabled);
         Color click = core.getVisualStyleManager().getCheckBoxClicked(enabled);
         Color fieldBack = core.getVisualStyleManager().getCheckBoxFieldBack(enabled);
-        int rounding = PGTUtil.checkboxRounding;
+        int rounding = PGTUtil.CHECKBOX_ROUNDING;
         int thisHeight = this.getHeight();
         
         if (this.hasFocus()) {

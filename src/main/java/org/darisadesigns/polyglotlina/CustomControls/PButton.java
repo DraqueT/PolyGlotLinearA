@@ -53,7 +53,7 @@ public class PButton extends JButton implements MouseListener {
     
     public PButton(DictCore _core) {
         float fontSize = (float)_core.getOptionsManager().getMenuFontSize();
-        super.setFont(PGTUtil.PMenuFont.deriveFont(fontSize));        
+        super.setFont(PGTUtil.MENU_FONT.deriveFont(fontSize));        
         setupListeners();
     }
     

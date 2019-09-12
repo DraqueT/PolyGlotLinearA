@@ -31,13 +31,9 @@ import java.awt.Toolkit;
 import java.io.IOException;
 
 public final class ClipboardHandler implements ClipboardOwner {
+
     private Transferable cachedContents;
-    /**
-     * Empty implementation of the ClipboardOwner interface.
-     *
-     * @param aClipboard
-     * @param aContents
-     */
+
     @Override
     public void lostOwnership(Clipboard aClipboard, Transferable aContents) {
         //do nothing

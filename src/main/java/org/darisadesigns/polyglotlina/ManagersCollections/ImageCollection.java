@@ -108,7 +108,7 @@ public class ImageCollection extends DictionaryCollection<ImageNode> {
         ImageNode emptyImage = new ImageNode();
         
         try {
-            emptyImage.setImage(ImageIO.read(getClass().getResource(PGTUtil.notFoundImage)));
+            emptyImage.setImage(ImageIO.read(getClass().getResource(PGTUtil.NOT_FOUND_IMAGE)));
         } catch (IOException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.error("INTERNAL ERROR", 

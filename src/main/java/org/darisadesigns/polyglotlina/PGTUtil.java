@@ -45,6 +45,7 @@ import org.darisadesigns.polyglotlina.Screens.ScrQuizGenDialog;
  */
 public class PGTUtil {
     private static File java8BridgeLocation = null;
+    private static File errorDirectory;
     public static final String DICTIONARY_XID = "dictionary";
     public static final String PGVERSION_XID = "PolyGlotVer";
     public static final String DICTIONARY_SAVE_DATE = "DictSaveDate";
@@ -242,33 +243,33 @@ public class PGTUtil {
     public static final String JAVA8_EXPORTTOEXCELCOMMAND = "export-to-excel";
     
     // string constants
-    public static final String dictFileName = "PGDictionary.xml";
-    public static final String conFontFileName = "conLangFont";
-    public static final String localFontFileName = "localLangFont";
-    public static final String LCDFontLocation = "/assets/org/DarisaDesigns/FontAssets/lcdFont.ttf";
-    public static final String UnicodeFontLocation = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Regular.ttf";
-    public static final String UnicodeFontBoldLocation = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Bold.ttf";
-    public static final String UnicodeFontItalicLocation = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Italic.ttf";
-    public static final String UnicodeFontBoldItalicLocation = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-BoldItalic.ttf";
-    public static final String UnicodeFontFamilyName = "Charis SIL";
-    public static final String ButtonFontLocation = "/assets/org/DarisaDesigns/FontAssets/buttonFont.ttf";
-    public static final String logoGraphSavePath = "logoGraphs/";
-    public static final String imagesSavePath = "images/";
-    public static final String grammarSoundSavePath = "grammarSounds/";
-    public static final String reversionSavePath = "reversion/";
-    public static final String reversionBaseFileName = "reversionXMLFile";
-    public static final String errorLogFile = "PolyGlot_error_log.log";
-    public static final String emptyFile = "<EMPTY>";
-    public static final String tempFile = "xxTEMPPGTFILExx";
-    public static final String polyGlotFont = "PolyGlot";
-    public static final String conLangFont = "PolyGlotConlangGrammarFont";
-    public static final String polyGlotIni = "PolyGlot.ini";
-    public static final String emptyLogoImage = "/assets/org/DarisaDesigns/ImageAssets/EmptyImage.png";
-    public static final String IPAOtherSounds = "/assets/org/DarisaDesigns/ImageAssets/IPA_Other.png";
-    public static final String treeNodeImage = "/assets/org/DarisaDesigns/ImageAssets/treeNode.png";
-    public static final String notFoundImage = "/assets/org/DarisaDesigns/ImageAssets/not-found.png";
-    public static final String polyGlotAbout = "/assets/org/DarisaDesigns/ImageAssets/PolyGlot_About.png";
-    public static final String polyGlotEaster = "/assets/org/DarisaDesigns/ImageAssets/n0rara_draque.png";
+    public static final String LANG_FILE_NAME = "PGDictionary.xml";
+    public static final String CON_FONT_FILE_NAME = "conLangFont";
+    public static final String LOCAL_FONT_FILE_NAME = "localLangFont";
+    public static final String LCD_FONT_LOCATION = "/assets/org/DarisaDesigns/FontAssets/lcdFont.ttf";
+    public static final String UNICODE_FONT_LOCATION = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Regular.ttf";
+    public static final String UNICODE_FONT_BOLD_LOCATION = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Bold.ttf";
+    public static final String UNICODE_FONT_ITALIC_LOCATION = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-Italic.ttf";
+    public static final String UNICODE_FONT_BOLD_ITALIC_LOCATION = "/assets/org/DarisaDesigns/FontAssets/CharisSIL-BoldItalic.ttf";
+    public static final String UNICODE_FONT_FAMILY_NAME = "Charis SIL";
+    public static final String BUTTON_FONT_LOCATION = "/assets/org/DarisaDesigns/FontAssets/buttonFont.ttf";
+    public static final String LOGOGRAPH_SAVE_PATH = "logoGraphs/";
+    public static final String IMAGES_SAVE_PATH = "images/";
+    public static final String GRAMMAR_SOUNDS_SAVE_PATH = "grammarSounds/";
+    public static final String REVERSION_SAVE_PATH = "reversion/";
+    public static final String REVERSION_BASE_FILE_NAME = "reversionXMLFile";
+    public static final String ERROR_LOG_FILE = "PolyGlot_error.log";
+    public static final String EMPTY_FILE = "<EMPTY>";
+    public static final String TEMP_FILE = "xxTEMPPGTFILExx";
+    public static final String POLYGLOT_FONT = "PolyGlot";
+    public static final String CONLANG_FONT = "PolyGlotConlangGrammarFont";
+    public static final String POLYGLOT_INI = "PolyGlot.ini";
+    public static final String POLYGLOT_WORKINGDIRECTORY = "PolyGlot";
+    public static final String EMPTY_LOGO_IMAGE = "/assets/org/DarisaDesigns/ImageAssets/EmptyImage.png";
+    public static final String TREE_NODE_IMAGE = "/assets/org/DarisaDesigns/ImageAssets/treeNode.png";
+    public static final String NOT_FOUND_IMAGE = "/assets/org/DarisaDesigns/ImageAssets/not-found.png";
+    public static final String POLYGLOT_ABOUT = "/assets/org/DarisaDesigns/ImageAssets/PolyGlot_About.png";
+    public static final String POLYGLOT_EASTER = "/assets/org/DarisaDesigns/ImageAssets/n0rara_draque.png";
     public static final String TESTRESOURCES = "src/test/java/TestResources/";
     
     public static final String playButtonUp = "/assets/org/DarisaDesigns/ImageAssets/play_OFF_BIG.png";
@@ -279,11 +280,16 @@ public class PGTUtil {
     public static final String deleteButton = "/assets/org/DarisaDesigns/ImageAssets/delete_button.png";
     public static final String addButtonPressed = "/assets/org/DarisaDesigns/ImageAssets/add_button_pressed.png";
     public static final String deleteButtonPressed = "/assets/org/DarisaDesigns/ImageAssets/delete_button_pressed.png";
+    
+    // Sound Recorder Constants
     public static final String ipa_vowels = "/assets/org/DarisaDesigns/ImageAssets/IPA_Vowels.png";
     public static final String pulmonic_consonants = "/assets/org/DarisaDesigns/ImageAssets/IPA_Pulmonic_Consonants.png";
     public static final String non_pulmonic_consonants = "/assets/org/DarisaDesigns/ImageAssets/IPA_NonPulmonicConsonants.png";
     public static final String ipa_other ="/assets/org/DarisaDesigns/ImageAssets/IPA_Other.png";
     public static final String mainMenuBG = "/assets/org/DarisaDesigns/ImageAssets/PolyGlotBG.png";
+    public static final String ucla_location = "ucla_wavs/";
+    public static final String wiki_location = "wiki_wavs/";
+    public static final String wavSuffix = ".wav";
     
     public static final String ipaSoundsLocation = "/assets/org/DarisaDesigns/SoundAssets/";
     public static final String RTLMarker = "\u202e";
@@ -347,10 +353,10 @@ public class PGTUtil {
     public static final Color colorCheckBoxFieldBackDisabled;
     
     // visual style constants
-    public static final int checkboxRounding = 3;
+    public static final int CHECKBOX_ROUNDING = 3;
     
     // UI Elements to set on OSX (copy/paste/cut)
-    public static final String[] inputMaps = {"Button.focusInputMap",
+    public static final String[] INPUT_MAPS = {"Button.focusInputMap",
                 "CheckBox.focusInputMap",
                 "ComboBox.ancestorInputMap",
                 "EditorPane.focusInputMap",
@@ -378,17 +384,17 @@ public class PGTUtil {
                 "Tree.focusInputMap"};
 
     // images and icons that only need to be loaded once
-    public static final ImageIcon addButtonIcon;
-    public static final ImageIcon delButtonIcon;
-    public static final ImageIcon addButtonIconPressed;
-    public static final ImageIcon delButtonIconPressed;
-    public static final ImageIcon polyGlotIcon;
+    public static final ImageIcon ADD_BUTTON_ICON;
+    public static final ImageIcon DEL_BUTTON_ICON;
+    public static final ImageIcon ADD_BUTTON_ICON_PRESSED;
+    public static final ImageIcon DEL_BUTTON_ICON_PRESSED;
+    public static final ImageIcon POLYGLOT_ICON;
     
     // Fonts stored here to cache values single time
-    public static final Font PMenuFont;
+    public static final Font MENU_FONT;
     
-    public static final boolean isOSX;
-    public static final boolean isWindows;
+    public static final boolean IS_OSX;
+    public static final boolean IS_WINDOWS;
     
     // one time set for code driven static values
     static {
@@ -435,7 +441,7 @@ public class PGTUtil {
             IOHandler.writeErrorLog(e, "Initilization error (PGTUtil)");
             tmpFont = javax.swing.UIManager.getDefaults().getFont("Label.font");
         }
-        PMenuFont = tmpFont;
+        MENU_FONT = tmpFont;
         
         scrNameLexicon = ScrLexicon.class.getName();
         scrNameGrammar = ScrGrammarGuide.class.getName();
@@ -444,23 +450,23 @@ public class PGTUtil {
         scrIPARefChart = ScrIPARefChart.class.getName();
         scrQuizGenDialog = ScrQuizGenDialog.class.getName();
         
-        addButtonIcon = new ImageIcon(new ImageIcon(
+        ADD_BUTTON_ICON = new ImageIcon(new ImageIcon(
                     PGTUtil.class.getResource("/assets/org/DarisaDesigns/ImageAssets/add_button.png"))
                     .getImage().getScaledInstance(21, 21, Image.SCALE_SMOOTH));
-        delButtonIcon = new ImageIcon(new ImageIcon(
+        DEL_BUTTON_ICON = new ImageIcon(new ImageIcon(
                 PGTUtil.class.getResource("/assets/org/DarisaDesigns/ImageAssets/delete_button.png"))
                 .getImage().getScaledInstance(21, 21, Image.SCALE_SMOOTH));
-        addButtonIconPressed = new ImageIcon(new ImageIcon(
+        ADD_BUTTON_ICON_PRESSED = new ImageIcon(new ImageIcon(
                 PGTUtil.class.getResource("/assets/org/DarisaDesigns/ImageAssets/add_button_pressed.png"))
                 .getImage().getScaledInstance(21, 21, Image.SCALE_SMOOTH));
-        delButtonIconPressed = new ImageIcon(new ImageIcon(
+        DEL_BUTTON_ICON_PRESSED = new ImageIcon(new ImageIcon(
                 PGTUtil.class.getResource("/assets/org/DarisaDesigns/ImageAssets/delete_button_pressed.png"))
                 .getImage().getScaledInstance(21, 21, Image.SCALE_SMOOTH));
-        polyGlotIcon = new ImageIcon(
+        POLYGLOT_ICON = new ImageIcon(
                 PGTUtil.class.getResource("/assets/org/DarisaDesigns/ImageAssets/PolyGlotIcon.png"));
         
-        isOSX = isOSX();
-        isWindows = isWindows();
+        IS_OSX = isOSX();
+        IS_WINDOWS = isWindows();
     }
     
     /**
@@ -541,5 +547,35 @@ public class PGTUtil {
         }
         
         return java8BridgeLocation;
+    }
+    
+    /**
+     * Default directory based on OS value for user dir
+     * @return 
+     */
+    public static File getDefaultDirectory() {
+        File ret = new File(System.getProperty("user.dir") + File.separator + PGTUtil.POLYGLOT_WORKINGDIRECTORY);
+        
+        if (!ret.exists()) {
+            ret.mkdir();
+        }
+        
+        return ret;
+    }
+
+    /**
+     * Error directory defaults based on OS settings (overrides respected)
+     * @return 
+     */
+    public static File getErrorDirectory() {
+        if (errorDirectory == null || !errorDirectory.exists()){
+            errorDirectory = getDefaultDirectory();
+        }
+        
+        return errorDirectory;
+    }
+
+    public static void setErrorDirectory(File _errorDirectory) {
+        errorDirectory = _errorDirectory;
     }
 }

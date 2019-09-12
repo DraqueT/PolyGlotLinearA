@@ -39,10 +39,6 @@ public class IPAHandler {
     private final SoundRecorder soundRecorder;
     private final Map<String, String> charMap;
     private final String[][] pulmonicTable = new String[23][9];
-    private final String ucla_location = "ucla_mp3s/";
-    private final String wiki_location = "wiki_oggs/";
-    private final String mp3Suffix = ".mp3";
-    private final String oggSuffix = ".ogg";
 
     public IPAHandler(Window _parent) {
         soundRecorder = new SoundRecorder(_parent);
@@ -536,10 +532,10 @@ public class IPAHandler {
         
         switch (ipaLibrary) {
             case UCLA_IPA:
-                soundName = ucla_location + soundName + mp3Suffix;
+                soundName = PGTUtil.ucla_location + soundName + PGTUtil.wavSuffix;
                 break;
             case WIKI_IPA:
-                soundName = wiki_location + soundName + oggSuffix;
+                soundName = PGTUtil.wiki_location + soundName + PGTUtil.wavSuffix;
                 break;
             default:
                 throw new Exception("Unrecognized IPA sound library: " + ipaLibrary);

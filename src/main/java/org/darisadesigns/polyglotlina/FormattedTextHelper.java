@@ -82,7 +82,7 @@ public class FormattedTextHelper {
                 fontColor = extractColor(nextNode);
                 
                 if (font.equals(conFont.getFamily())) {
-                    font = PGTUtil.conLangFont;
+                    font = PGTUtil.CONLANG_FONT;
                 }
             } else if (nextNode.startsWith("</font")) {
                 // do nothing
@@ -95,7 +95,7 @@ public class FormattedTextHelper {
                 Document doc = pane.getDocument();
                 
                 MutableAttributeSet aset = new SimpleAttributeSet();
-                if (font.equals(PGTUtil.conLangFont)) {
+                if (font.equals(PGTUtil.CONLANG_FONT)) {
                     if (core.getPropertiesManager().isEnforceRTL()) {
                         nextNode = PGTUtil.RTLMarker + nextNode;
                     }

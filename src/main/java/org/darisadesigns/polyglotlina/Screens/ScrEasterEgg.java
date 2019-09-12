@@ -35,7 +35,7 @@ public class ScrEasterEgg extends javax.swing.JFrame {
     public ScrEasterEgg() {
         initComponents();
         
-        jLabel1.setIcon(new ImageIcon(getClass().getResource(PGTUtil.polyGlotEaster)));
+        jLabel1.setIcon(new ImageIcon(getClass().getResource(PGTUtil.POLYGLOT_EASTER)));
     }
 
     /**

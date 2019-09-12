@@ -243,7 +243,7 @@ public class PropertiesManager {
     }
 
     public void setOverrideProgramPath(String override) {
-        if (override.equals(PGTUtil.emptyFile)) {
+        if (override.equals(PGTUtil.EMPTY_FILE)) {
             overrideProgramPath = "";
         } else {
             overrideProgramPath = override;

@@ -197,7 +197,7 @@ public abstract class PFrame extends JFrame implements FocusListener, WindowFocu
      */
     public static void setupOSSpecificCutCopyPaste() {
         if (System.getProperty("os.name").startsWith("Mac")) {
-            for (String inputMap : PGTUtil.inputMaps) {
+            for (String inputMap : PGTUtil.INPUT_MAPS) {
                 addTextBindings(inputMap, KeyEvent.META_DOWN_MASK);
             }
         }

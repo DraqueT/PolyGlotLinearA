@@ -55,7 +55,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.ProcessBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -236,7 +235,7 @@ public class IOHandler {
 
         if (IOHandler.isFileZipArchive(_fileName)) {
             try (ZipFile zipFile = new ZipFile(_fileName)) {
-                ZipEntry xmlEntry = zipFile.getEntry(PGTUtil.dictFileName);
+                ZipEntry xmlEntry = zipFile.getEntry(PGTUtil.LANG_FILE_NAME);
                 try (InputStream ioStream = zipFile.getInputStream(xmlEntry)) {
                     ret = CustHandlerFactory.getCustHandler(ioStream, _core);
                 } catch (Exception e) {
@@ -313,7 +312,7 @@ public class IOHandler {
      * @param core
      */
     public static void deleteIni(DictCore core) {
-        File f = new File(core.getWorkingDirectory() + PGTUtil.polyGlotIni);
+        File f = new File(core.getWorkingDirectory().getAbsolutePath() + File.separator + PGTUtil.POLYGLOT_INI);
         if (!f.exists()) {
             return;
         }
@@ -337,13 +336,15 @@ public class IOHandler {
      */
     public static void loadOptionsIni(DictCore core) throws Exception {
         OptionsManager opMan = core.getOptionsManager();
-        File f = new File(core.getWorkingDirectory() + PGTUtil.polyGlotIni);
+        File f = new File(core.getWorkingDirectory().getAbsolutePath() 
+                + File.separator + PGTUtil.POLYGLOT_INI);
         if (!f.exists() || f.isDirectory()) {
             return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(
-                core.getWorkingDirectory() + PGTUtil.polyGlotIni))) {
+                core.getWorkingDirectory().getAbsolutePath()
+                        + File.separator + PGTUtil.POLYGLOT_INI))) {
             String loadProblems = "";
 
             for (String line; (line = br.readLine()) != null;) {
@@ -438,7 +439,7 @@ public class IOHandler {
     public static void parseHandler(String _fileName, CustHandler _handler)
             throws IOException, ParserConfigurationException, SAXException {
         try (ZipFile zipFile = new ZipFile(_fileName)) {
-            ZipEntry xmlEntry = zipFile.getEntry(PGTUtil.dictFileName);
+            ZipEntry xmlEntry = zipFile.getEntry(PGTUtil.LANG_FILE_NAME);
             try (InputStream ioStream = zipFile.getInputStream(xmlEntry)) {
                 parseHandlerInternal(ioStream, _handler);
             }
@@ -502,7 +503,7 @@ public class IOHandler {
             final File f = File.createTempFile(_fileName, null); // TODO: Make this save a temp file in the SAME DIRECTORY as the initial file (per #744)
             try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
                 try (ZipOutputStream out = new ZipOutputStream(fileOutputStream, Charset.forName("ISO-8859-1"))) {
-                    ZipEntry e = new ZipEntry(PGTUtil.dictFileName);
+                    ZipEntry e = new ZipEntry(PGTUtil.LANG_FILE_NAME);
                     out.putNextEntry(e);
 
                     out.write(xmlData, 0, xmlData.length);
@@ -560,12 +561,12 @@ public class IOHandler {
         List<ReversionNode> reversionList = core.getReversionManager().getReversionList();
 
         try {
-            out.putNextEntry(new ZipEntry(PGTUtil.reversionSavePath));
+            out.putNextEntry(new ZipEntry(PGTUtil.REVERSION_SAVE_PATH));
 
             for (Integer i = 0; i < reversionList.size(); i++) {
                 ReversionNode node = reversionList.get(i);
 
-                out.putNextEntry(new ZipEntry(PGTUtil.reversionSavePath + PGTUtil.reversionBaseFileName
+                out.putNextEntry(new ZipEntry(PGTUtil.REVERSION_SAVE_PATH + PGTUtil.REVERSION_BASE_FILE_NAME
                         + i.toString()));
                 out.write(node.value);
                 out.closeEntry();
@@ -582,10 +583,10 @@ public class IOHandler {
         List<LogoNode> logoNodes = core.getLogoCollection().getAllLogos();
         if (!logoNodes.isEmpty()) {
             try {
-                out.putNextEntry(new ZipEntry(PGTUtil.logoGraphSavePath));
+                out.putNextEntry(new ZipEntry(PGTUtil.LOGOGRAPH_SAVE_PATH));
                 for (LogoNode curNode : logoNodes) {
                     try {
-                        out.putNextEntry(new ZipEntry(PGTUtil.logoGraphSavePath
+                        out.putNextEntry(new ZipEntry(PGTUtil.LOGOGRAPH_SAVE_PATH
                                 + curNode.getId().toString() + ".png"));
 
                         ImageIO.write(curNode.getLogoGraph(), "png", out);
@@ -611,7 +612,7 @@ public class IOHandler {
         Iterator<Entry<Integer, byte[]>> gramSoundIt = grammarSoundMap.entrySet().iterator();
         if (gramSoundIt.hasNext()) {
             try {
-                out.putNextEntry(new ZipEntry(PGTUtil.grammarSoundSavePath));
+                out.putNextEntry(new ZipEntry(PGTUtil.GRAMMAR_SOUNDS_SAVE_PATH));
 
                 while (gramSoundIt.hasNext()) {
                     Entry<Integer, byte[]> curEntry = gramSoundIt.next();
@@ -619,7 +620,7 @@ public class IOHandler {
                     byte[] curSound = curEntry.getValue();
 
                     try {
-                        out.putNextEntry(new ZipEntry(PGTUtil.grammarSoundSavePath
+                        out.putNextEntry(new ZipEntry(PGTUtil.GRAMMAR_SOUNDS_SAVE_PATH
                                 + curId.toString() + ".raw"));
                         out.write(curSound);
                         out.closeEntry();
@@ -642,10 +643,10 @@ public class IOHandler {
         List<ImageNode> imageNodes = core.getImageCollection().getAllImages();
         if (!imageNodes.isEmpty()) {
             try {
-                out.putNextEntry(new ZipEntry(PGTUtil.imagesSavePath));
+                out.putNextEntry(new ZipEntry(PGTUtil.IMAGES_SAVE_PATH));
                 for (ImageNode curNode : imageNodes) {
                     try {
-                        out.putNextEntry(new ZipEntry(PGTUtil.imagesSavePath
+                        out.putNextEntry(new ZipEntry(PGTUtil.IMAGES_SAVE_PATH
                                 + curNode.getId().toString() + ".png"));
 
                         ImageIO.write(curNode.getImage(), "png", out);
@@ -712,7 +713,7 @@ public class IOHandler {
             ZipEntry entry;
             while (entries.hasMoreElements()) { // find images directory (zip paths are linear, only simulating tree structure)
                 entry = entries.nextElement();
-                if (!entry.getName().equals(PGTUtil.imagesSavePath)) {
+                if (!entry.getName().equals(PGTUtil.IMAGES_SAVE_PATH)) {
                     continue;
                 }
                 break;
@@ -728,7 +729,7 @@ public class IOHandler {
                 BufferedImage img;
                 try (InputStream imageStream = zipFile.getInputStream(entry)) {
                     String name = entry.getName().replace(".png", "")
-                            .replace(PGTUtil.imagesSavePath, "");
+                            .replace(PGTUtil.IMAGES_SAVE_PATH, "");
                     int imageId = Integer.parseInt(name);
                     img = ImageIO.read(imageStream);
                     ImageNode imageNode = new ImageNode();
@@ -774,7 +775,7 @@ public class IOHandler {
         try (ZipFile zipFile = new ZipFile(fileName)) {
             while (it.hasNext()) {
                 LogoNode curNode = it.next();
-                ZipEntry imgEntry = zipFile.getEntry(PGTUtil.logoGraphSavePath
+                ZipEntry imgEntry = zipFile.getEntry(PGTUtil.LOGOGRAPH_SAVE_PATH
                         + curNode.getId().toString() + ".png");
 
                 BufferedImage img;
@@ -799,8 +800,8 @@ public class IOHandler {
             Integer i = 0;
             DictCore tmpCore;
 
-            ZipEntry reversion = zipFile.getEntry(PGTUtil.reversionSavePath
-                    + PGTUtil.reversionBaseFileName + i.toString());
+            ZipEntry reversion = zipFile.getEntry(PGTUtil.REVERSION_SAVE_PATH
+                    + PGTUtil.REVERSION_BASE_FILE_NAME + i.toString());
 
             while (reversion != null && i < reversionManager.getMaxReversionsCount()) {
                 tmpCore = new DictCore();
@@ -808,12 +809,12 @@ public class IOHandler {
                 reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
                         tmpCore.getLastSaveTime());
                 i++;
-                reversion = zipFile.getEntry(PGTUtil.reversionSavePath
-                        + PGTUtil.reversionBaseFileName + i.toString());
+                reversion = zipFile.getEntry(PGTUtil.REVERSION_SAVE_PATH
+                        + PGTUtil.REVERSION_BASE_FILE_NAME + i.toString());
             }
 
             // remember to load latest state in addition to all prior ones
-            reversion = zipFile.getEntry(PGTUtil.dictFileName);
+            reversion = zipFile.getEntry(PGTUtil.LANG_FILE_NAME);
             tmpCore = new DictCore();
 
             reversionManager.addVersionToEnd(streamToBytArray(zipFile.getInputStream(reversion)),
@@ -839,7 +840,7 @@ public class IOHandler {
                 exportPath += ".ttf";
             }
 
-            ZipEntry fontEntry = zipFile.getEntry(PGTUtil.conFontFileName);
+            ZipEntry fontEntry = zipFile.getEntry(PGTUtil.CON_FONT_FILE_NAME);
 
             if (fontEntry != null) {
                 Path path = Paths.get(exportPath);
@@ -859,7 +860,7 @@ public class IOHandler {
      * @throws IOException on failure
      */
     public static void exportCharisFont(String exportPath) throws IOException {
-        try (InputStream fontStream = IOHandler.class.getResourceAsStream(PGTUtil.UnicodeFontLocation)) {
+        try (InputStream fontStream = IOHandler.class.getResourceAsStream(PGTUtil.UNICODE_FONT_LOCATION)) {
             byte[] buffer = new byte[fontStream.available()];
             fontStream.read(buffer);
 
@@ -893,7 +894,7 @@ public class IOHandler {
                         continue;
                     }
 
-                    String soundPath = PGTUtil.grammarSoundSavePath
+                    String soundPath = PGTUtil.GRAMMAR_SOUNDS_SAVE_PATH
                             + curNode.getRecordingId().toString() + ".raw";
                     ZipEntry soundEntry = zipFile.getEntry(soundPath);
 
@@ -942,15 +943,15 @@ public class IOHandler {
     public static void saveOptionsIni(DictCore core) throws IOException {
 
         try (Writer f0 = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(core.getWorkingDirectory()
-                        + PGTUtil.polyGlotIni), "UTF-8"))) {
+                new FileOutputStream(core.getWorkingDirectory().getAbsolutePath()
+                        + File.separator + PGTUtil.POLYGLOT_INI), "UTF-8"))) {
             OptionsManager opMan = core.getOptionsManager();
             String newLine = System.getProperty("line.separator");
             String nextLine;
 
-            if (!testCanWrite(core.getWorkingDirectory() + PGTUtil.polyGlotIni)) {
+            if (!testCanWrite(core.getWorkingDirectory().getAbsolutePath() + File.separator + PGTUtil.POLYGLOT_INI)) {
                 throw new IOException("Unable to save settings. Polyglot does not have permission to write to folder: "
-                        + core.getWorkingDirectory()
+                        + core.getWorkingDirectory().getAbsolutePath()
                         + ". This is most common when running from Program Files in Windows.");
             }
 
@@ -1016,7 +1017,7 @@ public class IOHandler {
      * @throws IOException if this throws, something is wrong internally
      */
     public byte[] getUnicodeFontByteArray() throws FileNotFoundException, IOException {
-        try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontLocation)) {
+        try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UNICODE_FONT_LOCATION)) {
             return streamToBytArray(localStream);
         }
     }
@@ -1030,7 +1031,7 @@ public class IOHandler {
      * @throws IOException if this throws, something is wrong internally
      */
     public byte[] getUnicodeFontItalicByteArray() throws FileNotFoundException, IOException {
-        try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UnicodeFontItalicLocation)) {
+        try (InputStream localStream = this.getClass().getResourceAsStream(PGTUtil.UNICODE_FONT_ITALIC_LOCATION)) {
             return streamToBytArray(localStream);
         }
     }
@@ -1118,7 +1119,8 @@ public class IOHandler {
             errorMessage = comment + ":\n" + errorMessage;
         }
 
-        File errorLog = new File(PGTUtil.errorLogFile);
+        File errorLog = new File(PGTUtil.getErrorDirectory().getAbsolutePath() 
+                + File.separator + PGTUtil.ERROR_LOG_FILE);
 
         try {
             String output;
@@ -1152,6 +1154,18 @@ public class IOHandler {
             // IOHandler.writeErrorLog(e);
         }
     }
+    
+    public static String getErrorLog() throws FileNotFoundException {
+        String ret = "";
+        File errorLog = new File(PGTUtil.getErrorDirectory().getAbsolutePath() 
+                + File.separator + PGTUtil.ERROR_LOG_FILE);
+
+        if (errorLog.exists()) {
+            Scanner logScanner = new Scanner(errorLog).useDelimiter("\\Z");
+            ret = logScanner.hasNext() ? logScanner.next() : "";
+        }
+        return ret;
+    }
 
     /**
      * Gets system information in human readable format
@@ -1181,17 +1195,6 @@ public class IOHandler {
             ret += attribute + " : " + System.getProperty(attribute) + "\n";
         }
 
-        return ret;
-    }
-
-    public static String getErrorLog() throws FileNotFoundException {
-        String ret = "";
-        File errorLog = new File(PGTUtil.errorLogFile);
-
-        if (errorLog.exists()) {
-            Scanner logScanner = new Scanner(errorLog).useDelimiter("\\Z");
-            ret = logScanner.hasNext() ? logScanner.next() : "";
-        }
         return ret;
     }
 
@@ -1277,7 +1280,7 @@ public class IOHandler {
 
         try {
             Process p = new ProcessBuilder(arguments).start();
-            System.out.println(arguments);
+            System.out.println(Arrays.toString(arguments));
 
             // get general output
             InputStream is = p.getInputStream();

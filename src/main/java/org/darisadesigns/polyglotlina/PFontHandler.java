@@ -60,8 +60,8 @@ public class PFontHandler {
         if (isFileZipArchive(_path)) {
             try (ZipFile zipFile = new ZipFile(_path)) {
                 ZipEntry fontEntry = isConFont
-                        ? zipFile.getEntry(PGTUtil.conFontFileName)
-                        : zipFile.getEntry(PGTUtil.localFontFileName);
+                        ? zipFile.getEntry(PGTUtil.CON_FONT_FILE_NAME)
+                        : zipFile.getEntry(PGTUtil.LOCAL_FONT_FILE_NAME);
 
                 if (fontEntry != null) {
                     final File tempFile = File.createTempFile("stream2file", ".tmp");
@@ -325,9 +325,9 @@ public class PFontHandler {
                     byte[] buffer = new byte[1024];
                     try (FileInputStream fis = new FileInputStream(fontFile)) {
                         if (isConFont) {
-                            out.putNextEntry(new ZipEntry(PGTUtil.conFontFileName));
+                            out.putNextEntry(new ZipEntry(PGTUtil.CON_FONT_FILE_NAME));
                         } else {
-                            out.putNextEntry(new ZipEntry(PGTUtil.localFontFileName));
+                            out.putNextEntry(new ZipEntry(PGTUtil.LOCAL_FONT_FILE_NAME));
                         }
                         int length;
 
@@ -340,9 +340,9 @@ public class PFontHandler {
                 }
             } else {
                 if (isConFont) {
-                    out.putNextEntry(new ZipEntry(PGTUtil.conFontFileName));
+                    out.putNextEntry(new ZipEntry(PGTUtil.CON_FONT_FILE_NAME));
                 } else {
-                    out.putNextEntry(new ZipEntry(PGTUtil.localFontFileName));
+                    out.putNextEntry(new ZipEntry(PGTUtil.LOCAL_FONT_FILE_NAME));
                 }
                 out.write(cachedFont);
                 out.closeEntry();
@@ -368,7 +368,7 @@ public class PFontHandler {
      * @throws java.io.IOException if unable to load font
      */
     private Font getLcdFontInternal() throws FontFormatException, IOException {
-        try (InputStream tmp = this.getClass().getResourceAsStream(PGTUtil.LCDFontLocation)) {
+        try (InputStream tmp = this.getClass().getResourceAsStream(PGTUtil.LCD_FONT_LOCATION)) {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             Font ret = Font.createFont(Font.TRUETYPE_FONT, tmp);
 
@@ -389,7 +389,7 @@ public class PFontHandler {
      * @throws java.io.IOException
      */
     public static Font getCharisUnicodeFontInitial() throws IOException {
-        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UnicodeFontLocation);
+        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UNICODE_FONT_LOCATION);
     }
 
     /**
@@ -399,7 +399,7 @@ public class PFontHandler {
      * @throws java.io.IOException
      */
     public static Font getCharisUnicodeFontBoldInitial() throws IOException {
-        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UnicodeFontBoldLocation);
+        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UNICODE_FONT_BOLD_LOCATION);
     }
 
     /**
@@ -409,7 +409,7 @@ public class PFontHandler {
      * @throws java.io.IOException
      */
     public static Font getCharisUnicodeFontItalicInitial() throws IOException {
-        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UnicodeFontItalicLocation);
+        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UNICODE_FONT_ITALIC_LOCATION);
     }
 
     /**
@@ -419,7 +419,7 @@ public class PFontHandler {
      * @throws java.io.IOException
      */
     public static Font getCharisUnicodeFontBoldItalicInitial() throws IOException {
-        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UnicodeFontBoldItalicLocation);
+        return new PFontHandler().getCharisUnicodeFontInternal(PGTUtil.UNICODE_FONT_BOLD_ITALIC_LOCATION);
     }
 
     /**
@@ -456,7 +456,7 @@ public class PFontHandler {
      * @return
      */
     public InputStream getCharisInputStream() {
-        return this.getClass().getResourceAsStream(PGTUtil.UnicodeFontLocation);
+        return this.getClass().getResourceAsStream(PGTUtil.UNICODE_FONT_LOCATION);
     }
 
     /**
@@ -478,7 +478,7 @@ public class PFontHandler {
      */
     private Font getMenuFontInternal() throws IOException {
         Font ret = null;
-        try (InputStream tmp = this.getClass().getResourceAsStream(PGTUtil.ButtonFontLocation)) {
+        try (InputStream tmp = this.getClass().getResourceAsStream(PGTUtil.BUTTON_FONT_LOCATION)) {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ret = Font.createFont(Font.TRUETYPE_FONT, tmp);
             ret = ret.deriveFont((float) 12); // default to size 12 font

@@ -85,7 +85,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.ImageIcon(getClass().getResource(PGTUtil.polyGlotAbout))" type="code"/>
+              <Connection code="new javax.swing.ImageIcon(getClass().getResource(PGTUtil.POLYGLOT_ABOUT))" type="code"/>
             </Property>
           </Properties>
         </Component>

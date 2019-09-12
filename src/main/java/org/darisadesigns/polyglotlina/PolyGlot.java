@@ -52,9 +52,9 @@ public class PolyGlot {
             
             // must be set before accessing System to test OS (values will simply be ignored for other OSes
             if (osIntegration) {
-                if (PGTUtil.isOSX) {
+                if (PGTUtil.IS_OSX) {
                     // set program icon
-                    Taskbar.getTaskbar().setIconImage(PGTUtil.polyGlotIcon.getImage());
+                    Taskbar.getTaskbar().setIconImage(PGTUtil.POLYGLOT_ICON.getImage());
                 }
                 
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -91,7 +91,7 @@ public class PolyGlot {
                             }
 
                             // runs additional integration if on OSX system
-                            if (PGTUtil.isOSX && osIntegration) {
+                            if (PGTUtil.IS_OSX && osIntegration) {
                                 Desktop desk = Desktop.getDesktop();
                                 final ScrMainMenu staticScr = s;
                                 
@@ -122,8 +122,8 @@ public class PolyGlot {
                                         staticScr.printToPdf();
                                     }
                                 });
-                            } else if (PGTUtil.isWindows && osIntegration) {
-                                s.setIconImage(PGTUtil.polyGlotIcon.getImage());
+                            } else if (PGTUtil.IS_WINDOWS && osIntegration) {
+                                s.setIconImage(PGTUtil.POLYGLOT_ICON.getImage());
                             }
                         } catch (ArrayIndexOutOfBoundsException e) {
                             IOHandler.writeErrorLog(e, "Problem with top level PolyGlot arguments.");
@@ -203,9 +203,9 @@ public class PolyGlot {
             IOHandler.writeErrorLog(e);
             startProblems += "Unable to load Java FX. Download and install to use PolyGlot ";
             
-            if (PGTUtil.isOSX) {
+            if (PGTUtil.IS_OSX) {
                 startProblems += "The default Java Virtual Machine for OSX does not include JFX. Please download from java.com/en/download/";
-            } else if (PGTUtil.isWindows) {
+            } else if (PGTUtil.IS_WINDOWS) {
                 startProblems += "The version of Java you are using does not include JFX.  Please download from java.com/en/download/";
             } else {
                 startProblems += "(JavaFX not included in some builds of Java for Linux).\n";

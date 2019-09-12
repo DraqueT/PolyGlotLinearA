@@ -9,7 +9,6 @@ module org.darisadesigns.polyglotlina.polyglot {
     requires org.apache.commons.lang3; //AUT - fixed with module injector
     requires org.apache.commons.text; //AUT - fixed with module injector
     requires org.jsoup; // AUT - fixed with module injector
-    
-    
+
     exports org.darisadesigns.polyglotlina;
 }

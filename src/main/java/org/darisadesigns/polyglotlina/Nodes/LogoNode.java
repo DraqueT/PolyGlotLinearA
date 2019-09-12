@@ -47,7 +47,7 @@ public class LogoNode extends DictNode {
     protected List<String> readings = new ArrayList<>();
 
     public LogoNode() {
-        ImageIcon loadBlank = new ImageIcon(getClass().getResource(PGTUtil.emptyLogoImage));
+        ImageIcon loadBlank = new ImageIcon(getClass().getResource(PGTUtil.EMPTY_LOGO_IMAGE));
         BufferedImage image = new BufferedImage(
                 loadBlank.getIconWidth(),
                 loadBlank.getIconHeight(),

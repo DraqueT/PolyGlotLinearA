@@ -43,7 +43,8 @@ public class IOHandlerTest {
     @Test
     public void testWriteErrorLogBasic() throws IOException {
         IOHandler.writeErrorLog(new Exception("This is a test."));
-        File myLog = new File(PGTUtil.errorLogFile);
+        File myLog = new File(PGTUtil.getErrorDirectory().getAbsolutePath() 
+                + File.separator + PGTUtil.ERROR_LOG_FILE);
         
         assertTrue(myLog.exists());
         
@@ -60,7 +61,7 @@ public class IOHandlerTest {
     @Test
     public void testWriteMultipleErrorLogs() throws IOException {
         IOHandler.writeErrorLog(new Exception("This is a test."));
-        File myLog = new File(PGTUtil.errorLogFile);
+        File myLog = new File(PGTUtil.ERROR_LOG_FILE);
         long logLenFirst = myLog.length() - 1;
         IOHandler.writeErrorLog(new Exception("This is a test."));
         long logLenSecond = myLog.length();
@@ -71,7 +72,7 @@ public class IOHandlerTest {
     
     @Test
     public void testWriteErrorLogsMaxLength() throws FileNotFoundException {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             IOHandler.writeErrorLog(new Exception("This is a test: " + i));
         }
         
@@ -135,7 +136,7 @@ public class IOHandlerTest {
     }
     
     private void wipeErrorLog() {
-        File log = new File(PGTUtil.errorLogFile);
+        File log = new File(PGTUtil.ERROR_LOG_FILE);
         if (log.exists()) {
             log.delete();
         }

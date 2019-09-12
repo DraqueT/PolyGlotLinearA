@@ -42,6 +42,7 @@ import org.darisadesigns.polyglotlina.ManagersCollections.WordClassCollection;
 import org.darisadesigns.polyglotlina.Screens.ScrMainMenu;
 import java.awt.Color;
 import java.awt.FontFormatException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -193,17 +194,13 @@ public class DictCore {
      *
      * @return current working directory
      */
-    public String getWorkingDirectory() {
-        String ret = propertiesManager.getOverrideProgramPath();
-
-        try {
-            ret = ret.isEmpty() ? DictCore.class.getProtectionDomain().getCodeSource().getLocation().toURI().g‌​etPath() : ret;
-        } catch (URISyntaxException e) {
-            IOHandler.writeErrorLog(e);
-            InfoBox.error("PATH ERROR", "Unable to resolve root path of PolyGlot:\n"
-                    + e.getLocalizedMessage(), rootWindow);
-        }
-
+    public File getWorkingDirectory() {
+        String overridePath = propertiesManager.getOverrideProgramPath();
+        
+        File ret = overridePath.isEmpty() ? 
+                PGTUtil.getDefaultDirectory() : 
+                new File(overridePath);
+        
         return ret;
     }
 

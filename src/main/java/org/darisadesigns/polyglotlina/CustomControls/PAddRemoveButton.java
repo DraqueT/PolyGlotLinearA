@@ -84,12 +84,12 @@ public class PAddRemoveButton extends JButton {
         
         switch (arg) {
             case "-":
-                setIcon(PGTUtil.delButtonIcon);
-                setPressedIcon(PGTUtil.delButtonIconPressed);
+                setIcon(PGTUtil.DEL_BUTTON_ICON);
+                setPressedIcon(PGTUtil.DEL_BUTTON_ICON_PRESSED);
                 break;
             case "+":
-                setIcon(PGTUtil.addButtonIcon); 
-                setPressedIcon(PGTUtil.addButtonIconPressed);
+                setIcon(PGTUtil.ADD_BUTTON_ICON); 
+                setPressedIcon(PGTUtil.ADD_BUTTON_ICON_PRESSED);
                 break;
         }
         setText(arg);

@@ -116,7 +116,7 @@ public final class ScrMainMenu extends PFrame {
 
         try {
             backGround = ImageIO.read(getClass().getResource(PGTUtil.mainMenuBG));
-            jLabel1.setFont(PGTUtil.PMenuFont.deriveFont(45f));
+            jLabel1.setFont(PGTUtil.MENU_FONT.deriveFont(45f));
         } catch (IOException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.error("Resource Error",
@@ -283,7 +283,7 @@ public final class ScrMainMenu extends PFrame {
 
     public void setFile(String fileName) {
         // some wrappers communicate empty files like this
-        if (fileName.equals(PGTUtil.emptyFile)
+        if (fileName.equals(PGTUtil.EMPTY_FILE)
                 || fileName.isEmpty()) {
             return;
         }
@@ -1592,7 +1592,7 @@ public final class ScrMainMenu extends PFrame {
                         + "This may result in the statistics page appearing incorrectly.\n"
                         + "Please select a path to save font to, install from this location, "
                         + "and re-run the statistics option.", this);
-                if (conFontFamily.equals(PGTUtil.UnicodeFontFamilyName)) {
+                if (conFontFamily.equals(PGTUtil.UNICODE_FONT_FAMILY_NAME)) {
                     exportFont(true);
                 } else {
                     exportFont(false);

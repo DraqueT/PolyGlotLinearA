@@ -25,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -40,7 +39,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-//import org.newdawn.easyogg.OggClip; // TODO: JAVA 12 UPGRADE CASUALTY?
 
 /**
  * Basic sound recording code. Allows recording, playing, pausing. Will
@@ -80,10 +78,10 @@ public class SoundRecorder {
     public SoundRecorder(Window _parent) {
         format = getAudioFormat();
         parentWindow = _parent;
-        
+
         // JFX used in some instances when initialized in this case
         // This ensures JFX initialized
-        @SuppressWarnings("unused") 
+        @SuppressWarnings("unused")
         JFXPanel makeCertainJFXStarted = new JFXPanel();
     }
 
@@ -211,32 +209,32 @@ public class SoundRecorder {
         }
 
         soundThread = new Thread(() -> {
-                int bytesRecorded = 0;
-                float BPS = (format.getSampleRate()
-                        * format.getSampleSizeInBits()) / 8;
+            int bytesRecorded = 0;
+            float BPS = (format.getSampleRate()
+                    * format.getSampleSizeInBits()) / 8;
 
-                while (parent.isRecording()) {
-                    int count = line.read(buffer, 0, buffer.length);
-                    if (count > 0) {
-                        out.write(buffer, 0, count);
-                    }
-
-                    bytesRecorded += buffer.length;
-                    float seconds = bytesRecorded / BPS;
-                    timer.setText(getTimerValue(seconds));
+            while (parent.isRecording()) {
+                int count = line.read(buffer, 0, buffer.length);
+                if (count > 0) {
+                    out.write(buffer, 0, count);
                 }
 
-                recordBut.setIcon(recUp);
+                bytesRecorded += buffer.length;
+                float seconds = bytesRecorded / BPS;
+                timer.setText(getTimerValue(seconds));
+            }
 
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                    IOHandler.writeErrorLog(e);
-                    InfoBox.error("Recording wrror: ", "Unable to record: "
-                            + e.getLocalizedMessage(), parentWindow);
-                }
-                line.close();
+            recordBut.setIcon(recUp);
+
+            try {
+                out.close();
+            } catch (IOException e) {
+                //e.printStackTrace();
+                IOHandler.writeErrorLog(e);
+                InfoBox.error("Recording wrror: ", "Unable to record: "
+                        + e.getLocalizedMessage(), parentWindow);
+            }
+            line.close();
         });
 
         recordThread = soundThread.toString();
@@ -310,11 +308,11 @@ public class SoundRecorder {
             try (SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info)) {
                 sourceLine.open(format);
                 sourceLine.start();
-                
+
                 int bufferSize = 1;
                 byte[] buffer = new byte[bufferSize];
                 int totalCycles = ais.available() / bufferSize;
-                
+
                 int count;
                 int cycles = 0;
                 while ((count
@@ -324,7 +322,7 @@ public class SoundRecorder {
                             // suppression for this warning is nonfunctional. Very annoying.
                             Thread.sleep(timeToDie);
                             playPauseBut.setIcon(playUp);
-                            
+
                             if (killPlay) { // immediately ends playing process
                                 killPlay = false;
                                 playing = false;
@@ -335,9 +333,9 @@ public class SoundRecorder {
                                 return;
                             }
                         }
-                        
+
                         playPauseBut.setIcon(playDown);
-                        
+
                         if (killPlay) { // immediately ends playing process
                             killPlay = false;
                             playing = false;
@@ -348,26 +346,26 @@ public class SoundRecorder {
                             playPauseBut.setIcon(playUp);
                             return;
                         }
-                        
+
                         sourceLine.write(buffer, 0, count);
-                        
+
                         if (slider != null) {
                             double percentPlayed = 1.0 - (((double) (totalCycles - cycles)) / (double) totalCycles);
                             slider.setValue((int) (percentPlayed * slider.getMaximum()));
                         }
-                        
+
                         if (timer != null) {
                             timer.setText(getTimerValue(bufferSize, cycles));
                         }
                     }
-                    
+
                     cycles++;
                 }
-                
+
                 if (slider != null) {
                     slider.setValue(slider.getMaximum());
                 }
-                
+
                 playing = false;
                 sourceLine.drain();
                 sourceLine.close();
@@ -379,7 +377,7 @@ public class SoundRecorder {
                 InfoBox.error("Play Error", "Unable to play audio: "
                         + e.getLocalizedMessage(), parentWindow);
             }
-            
+
             playPauseBut.setIcon(playUp);
         });
 
@@ -458,44 +456,25 @@ public class SoundRecorder {
     }
 
     public void playAudioFile(String filePath) throws Exception {
-        if (filePath.toLowerCase().endsWith("mp3")) {
-            playMP3(filePath);
-        } else if (filePath.toLowerCase().endsWith("ogg")) {
-            playOGG(filePath);
+        if (filePath.toLowerCase().endsWith("mp3") || filePath.toLowerCase().endsWith("wav")) {
+            playAudio(filePath);
         } else {
             throw new Exception("Incompatible file type.");
         }
     }
-    
+
     /**
      * Plays MP3 file back
      *
      * @param filePath path to load MP3
      */
-    private void playMP3(String filePath) {
-        // I have no idea why this one mp3 file stopped working. The same exact file works in prior builds.
-        // Re-encoding did nothing to fix it. Only works as an uncompressed wav file. WTF.
-        if (filePath.contains("Open-mid_back_unrounded_vowel")) {
-            filePath = filePath.replace(".mp3", ".wav");
-        }
-        
-        Media hit = new Media(parentWindow.getClass().getResource(filePath).toExternalForm());
+    private void playAudio(String filePath) {
+        Media hit = new Media(SoundRecorder.class.getResource(filePath).toExternalForm());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose();
         }
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.play();
-    }
-    
-    public void playOGG(String filePath) throws IOException {
-        URL url = parentWindow.getClass().getResource(filePath);
-        
-        // TODO: JAVA 12 UPGRADE CASUALTY?
-        // OGGClip system seems to take care of all stream closing
-//        OggClip ogg = new OggClip(url.openStream());
-//        ogg.setBalance(0f);
-//        ogg.setGain(1.0f);
-//        ogg.play();
     }
 }

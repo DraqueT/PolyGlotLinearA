@@ -375,7 +375,7 @@ public class LogoCollection extends DictionaryCollection<LogoNode> {
         LogoNode emptyNode = new LogoNode();
         
         try {
-            emptyNode.setLogoGraph(ImageIO.read(getClass().getResource(PGTUtil.notFoundImage)));
+            emptyNode.setLogoGraph(ImageIO.read(getClass().getResource(PGTUtil.NOT_FOUND_IMAGE)));
         } catch (IOException e) {
             IOHandler.writeErrorLog(e);
             InfoBox.error("INTERNAL ERROR", 

@@ -56,14 +56,14 @@ public class InternalResourcesTest {
             "/PolyGlot/ImageAssets/IPA_Pulmonic_Consonants.png",
             "/PolyGlot/ImageAssets/n0rara_draque.png",
             "/PolyGlot/ImageAssets/recording_OFF_BIG.png",
-            PGTUtil.emptyLogoImage,
-            PGTUtil.IPAOtherSounds,
-            PGTUtil.treeNodeImage,
-            PGTUtil.notFoundImage};
+            PGTUtil.EMPTY_LOGO_IMAGE,
+            PGTUtil.ipa_other,
+            PGTUtil.TREE_NODE_IMAGE,
+            PGTUtil.NOT_FOUND_IMAGE};
         
         for (String imageFile : testImagePaths) {
             try {
-                ImageIO.read(getClass().getResource(PGTUtil.notFoundImage));
+                ImageIO.read(getClass().getResource(PGTUtil.NOT_FOUND_IMAGE));
             } catch (IOException e) {
                 problemFiles += imageFile + ", ";
             }
@@ -75,12 +75,12 @@ public class InternalResourcesTest {
     @Test
     public void testFontResources() {
         String problemFiles = "";
-        String[] fontFileLocations =  {PGTUtil.LCDFontLocation,
-            PGTUtil.UnicodeFontLocation,
-            PGTUtil.UnicodeFontBoldLocation,
-            PGTUtil.UnicodeFontItalicLocation,
-            PGTUtil.UnicodeFontBoldItalicLocation,
-            PGTUtil.ButtonFontLocation};
+        String[] fontFileLocations =  {PGTUtil.LCD_FONT_LOCATION,
+            PGTUtil.UNICODE_FONT_LOCATION,
+            PGTUtil.UNICODE_FONT_BOLD_LOCATION,
+            PGTUtil.UNICODE_FONT_ITALIC_LOCATION,
+            PGTUtil.UNICODE_FONT_BOLD_ITALIC_LOCATION,
+            PGTUtil.BUTTON_FONT_LOCATION};
         
         for (String fontFileLocation : fontFileLocations) {
             try (InputStream tmp = this.getClass().getResourceAsStream(fontFileLocation)) {
