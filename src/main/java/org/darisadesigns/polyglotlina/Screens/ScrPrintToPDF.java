@@ -37,9 +37,6 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.darisadesigns.polyglotlina.Java8Bridge;
 
-// TODO: JAVA 12 UPGRADE: Rework this to use the PolyGlot PDF Java 8 module
-// Remember that this should check for Java 8 runnability
-
 /**
  *
  * @author draque.thompson

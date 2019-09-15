@@ -11,4 +11,5 @@ module org.darisadesigns.polyglotlina.polyglot {
     requires org.jsoup; // AUT - fixed with module injector
 
     exports org.darisadesigns.polyglotlina;
+    exports org.darisadesigns.polyglotlina.CustomControls;
 }

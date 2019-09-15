@@ -55,7 +55,7 @@ public class WebInterface {
         URL url;
 
         try {
-            url = new URL("https://drive.google.com/uc?export=download&id=0B2RMQ7sRXResN3VwLTAwTFE0ZlE");
+            url = new URL(PGTUtil.UPDATE_FILE_URL);
 
             try (InputStream is = url.openStream()) {
                 Scanner s = new Scanner(is);
@@ -67,7 +67,11 @@ public class WebInterface {
         } catch (MalformedURLException e) {
             throw new MalformedURLException("Server unavailable or not found.");
         } catch (IOException e) {
-            throw new IOException("Update file not found. Please check for updates manually at PolyGlot homepage.", e);
+            throw new IOException("Update file not found or has been moved. Please check for updates manually at PolyGlot homepage.", e);
+        }
+
+        if (xmlText.contains("<TITLE>Moved Temporarily</TITLE>")) {
+            throw new Exception("Update file not found or has been moved. Please check for updates manually at PolyGlot homepage.");
         }
 
         if (xmlText.length() != 0) {

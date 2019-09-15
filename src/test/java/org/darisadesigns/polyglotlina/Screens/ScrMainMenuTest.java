@@ -41,9 +41,8 @@ public class ScrMainMenuTest {
         mainMenu = new ScrMainMenu("");
     }
     
-    // TODO: rename to refleft that this tests for lexicon count
     @Test
-    public void testManyOpensAndCloses() throws SecurityException, 
+    public void testManyOpensAndClosesLexCountMaintained() throws SecurityException, 
             NoSuchFieldException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, 
             InvocationTargetException, ParserConfigurationException, TransformerException, IOException {
         final String testFileName = PGTUtil.TESTRESOURCES + "earien_TEST.pgd";

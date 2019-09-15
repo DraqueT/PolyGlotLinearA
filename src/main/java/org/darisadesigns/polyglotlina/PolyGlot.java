@@ -19,8 +19,10 @@
  */
 package org.darisadesigns.polyglotlina;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Taskbar;
+import java.awt.Toolkit;
 import java.awt.desktop.AboutEvent;
 import java.awt.desktop.AboutHandler;
 import java.awt.desktop.PreferencesEvent;
@@ -30,8 +32,13 @@ import java.awt.desktop.PrintFilesHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitResponse;
+import java.awt.event.KeyEvent;
+import javax.swing.InputMap;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.text.DefaultEditorKit;
 import org.darisadesigns.polyglotlina.CustomControls.InfoBox;
-import org.darisadesigns.polyglotlina.CustomControls.PFrame;
 import org.darisadesigns.polyglotlina.Screens.ScrAbout;
 import org.darisadesigns.polyglotlina.Screens.ScrMainMenu;
 
@@ -63,8 +70,9 @@ public class PolyGlot {
             }
 
             setupNimbus();
-            
+            setupCustomUI();
             conditionalBetaSetup();
+            setupOSSpecificCutCopyPaste();
 
             java.awt.EventQueue.invokeLater(() -> {
 
@@ -79,7 +87,6 @@ public class PolyGlot {
                     if (canStart()) {
                         try {
                             // separated due to serious nature of Thowable vs Exception
-                            PFrame.setupOSSpecificCutCopyPaste(); // TODO: consider moving this to PolyGlot.java (requires testing)
                             s = new ScrMainMenu(overridePath);
                             s.checkForUpdates(false);
                             s.setVisible(true);
@@ -177,6 +184,15 @@ public class PolyGlot {
         }
     }
     
+    private static void setupCustomUI() {
+        UIManager.put("ScrollBarUI", "org.darisadesigns.polyglotlina.CustomControls.PScrollBarUI");
+        UIManager.put("SplitPaneUI", "org.darisadesigns.polyglotlina.CustomControls.PSplitPaneUI");
+        UIManager.put("ToolTipUI", "org.darisadesigns.polyglotlina.CustomControls.PToolTipUI");
+        UIManager.put("OptionPane.background", Color.WHITE);
+        UIManager.put("Panel.background", Color.WHITE);
+        UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
+    }
+    
     /**
      * Tests whether PolyGlot can start, informs user of startup problems.
      * @return 
@@ -226,5 +242,39 @@ public class PolyGlot {
 
     public static boolean testIsBeta() {
         return IOHandler.fileExists("lib/BETA_WARNING.txt");
+    }
+    
+    /**
+     * enable cut/copy/paste/select all if running on a Mac, and any other
+     * specific, text based bindings I might choose to add later
+     */
+    private static void setupOSSpecificCutCopyPaste() {
+        if (System.getProperty("os.name").startsWith("Mac")) {
+            for (String inputMap : PGTUtil.INPUT_MAPS) {
+                addTextBindings(inputMap, KeyEvent.META_DOWN_MASK);
+            }
+        }
+    }
+    
+    /**
+     * Adds copy/paste/cut/select all bindings to the input map provided
+     *
+     * @param UIElement the string representing a UI Element in UIManager
+     * @param mask the mask to associate the binding with (command or control,
+     * for Macs or PC/Linux boxes, respectively.)
+     */
+    private static void addTextBindings(final String UIElement, final int mask) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                InputMap im = (InputMap) UIManager.get(UIElement);
+                im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | mask), DefaultEditorKit.copyAction);
+                im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | mask), DefaultEditorKit.pasteAction);
+                im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | mask), DefaultEditorKit.cutAction);
+                im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | mask), DefaultEditorKit.selectAllAction);
+                UIManager.put(UIElement, im);
+            } catch (NullPointerException e) {
+                IOHandler.writeErrorLog(e, "Unable to get input map for: " + UIElement);
+            }
+        });
     }
 }

@@ -25,9 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -35,10 +32,12 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  * Basic sound recording code. Allows recording, playing, pausing. Will
@@ -64,7 +63,6 @@ public class SoundRecorder {
     private final Window parentWindow;
     private JButton playPauseBut;
     private JButton recordBut;
-    private MediaPlayer mediaPlayer;
     ImageIcon playUp;
     ImageIcon playDown;
     ImageIcon recUp;
@@ -78,11 +76,6 @@ public class SoundRecorder {
     public SoundRecorder(Window _parent) {
         format = getAudioFormat();
         parentWindow = _parent;
-
-        // JFX used in some instances when initialized in this case
-        // This ensures JFX initialized
-        @SuppressWarnings("unused")
-        JFXPanel makeCertainJFXStarted = new JFXPanel();
     }
 
     /**
@@ -468,13 +461,43 @@ public class SoundRecorder {
      *
      * @param filePath path to load MP3
      */
-    private void playAudio(String filePath) {
-        Media hit = new Media(SoundRecorder.class.getResource(filePath).toExternalForm());
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-        }
-        mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.play();
+    private void playAudio(String filePath) throws Exception {
+        SwingUtilities.invokeLater(() -> {
+            final int BUFFER_SIZE = 128000;
+            AudioInputStream astream;
+            AudioFormat audioFormat;
+            SourceDataLine sourceLine = null;
+
+            try {
+                InputStream istream = SoundRecorder.class.getResource(filePath).openStream();
+                astream = AudioSystem.getAudioInputStream(istream);
+                audioFormat = astream.getFormat();
+
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                sourceLine = (SourceDataLine) AudioSystem.getLine(info);
+                sourceLine.open(audioFormat);
+
+                sourceLine.start();
+
+                int nBytesRead = 0;
+                byte[] abData = new byte[BUFFER_SIZE];
+                while (nBytesRead != -1) {
+                    nBytesRead = astream.read(abData, 0, abData.length);
+
+                    if (nBytesRead >= 0) {
+                        sourceLine.write(abData, 0, nBytesRead);
+                    }
+                }
+            } catch (IOException
+                    | LineUnavailableException
+                    | UnsupportedAudioFileException e) {
+                InfoBox.error("Sound Error", "Unable to play sound: " + filePath + " due to: " + e.getLocalizedMessage(), null);
+            } finally {
+                if (sourceLine != null) {
+                    sourceLine.drain();
+                    sourceLine.close();
+                }
+            }
+        });
     }
 }

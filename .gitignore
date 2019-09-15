@@ -3,4 +3,5 @@ build
 target
 PolyGlot_error_log.log
 PolyGlot_error.log
+appimage
 *.ini

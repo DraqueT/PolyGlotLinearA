@@ -1,0 +1,12 @@
+[Application]
+app.name=PolyGlot
+app.version=1.0
+app.runtime=$APPDIR/runtime
+app.identifier=org.darisadesigns.polyglotlina
+app.classpath=$APPDIR/Java/PolyGlotLinA-3.0-jar-with-dependencies.jar:$APPDIR/Java/PolyGlotLinA-3.0.jar
+app.mainjar=$APPDIR/Java/PolyGlotLinA-3.0-jar-with-dependencies.jar
+app.mainclass=org.darisadesigns.polyglotlina.PolyGlot
+
+[JavaOptions]
+
+[ArgOptions]

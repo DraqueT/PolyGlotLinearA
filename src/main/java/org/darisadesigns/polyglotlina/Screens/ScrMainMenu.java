@@ -99,16 +99,6 @@ public final class ScrMainMenu extends PFrame {
         core = new DictCore(); // needed for initialization
         core.setRootWindow(this);
         toDoTree = new PToDoTree(core);
-
-        // TODO: JAVA 12 UPGRADE - RETHINK THESE CLASSES
-        // TODO: MOVE THIS INTO PolyGlot.java
-//        UIManager.put("ScrollBarUI", "PolyGlot.CustomControls.PScrollBarUI");
-//        UIManager.put("SplitPaneUI", "PolyGlot.CustomControls.PSplitPaneUI");
-//        UIManager.put("OptionPane.background", Color.white);
-//        UIManager.put("Panel.background", Color.white);
-//        UIManager.put("ToolTipUI", "PolyGlot.CustomControls.PToolTipUI");
-//        UIManager.getLookAndFeelDefaults().put("Panel.background", Color.WHITE);
-
         cacheLexicon = ScrLexicon.run(core, this);
         
         initComponents();
@@ -217,7 +207,7 @@ public final class ScrMainMenu extends PFrame {
         } catch (IOException e) {
             // save error likely due to inability to write to disk, disable logging
             // IOHandler.writeErrorLog(e);
-            InfoBox.warning("INI Save Error", "Unable to save settings file on exit.", core.getRootWindow());
+            InfoBox.warning("INI Save Error", e.getLocalizedMessage(), core.getRootWindow());
         }
 
         System.exit(0);
@@ -777,6 +767,8 @@ public final class ScrMainMenu extends PFrame {
                     } else if (lastChars.toLowerCase().endsWith("who's draque") 
                             || lastChars.toLowerCase().endsWith("who is draque")) {
                         ScrEasterEgg.run(core.getRootWindow());
+                    } else if (lastChars.endsWith("uuddlrlrba")) {
+                        InfoBox.info("コナミコマンド", "30の命を与えます。", null);
                     }
                 }
                 

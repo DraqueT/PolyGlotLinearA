@@ -80,26 +80,26 @@ public class PGTUtil {
     public static final String POS_GLOSS_XID = "classGloss";
 
     // language properties
-    public static final String langPropertiesXID = "languageProperties";
-    public static final String fontConXID = "fontCon";
-    public static final String fontLocalXID = "fontLocal";
-    public static final String langPropLangNameXID = "langName";
-    public static final String langPropFontSizeXID = "fontSize";
-    public static final String langPropFontStyleXID = "fontStyle";
-    public static final String langPropLocalFontSizeXID = "localFontSize";
-    public static final String langPropAlphaOrderXID = "alphaOrder";
-    public static final String langPropTypeMandatoryXID = "langPropTypeMandatory";
-    public static final String langPropLocalMandatoryXID = "langPropLocalMandatory";
-    public static final String langPropWordUniquenessXID = "langPropWordUniqueness";
-    public static final String langPropLocalUniquenessXID = "langPropLocalUniqueness";
-    public static final String langPropIgnoreCaseXID = "langPropIgnoreCase";
-    public static final String langPropDisableProcRegexXID = "langPropDisableProcRegex";
-    public static final String langPropEnforceRTLXID = "langPropEnforceRTL";
-    public static final String langPropAuthCopyrightXID = "langPropAuthorCopyright";
-    public static final String langPropLocalLangNameXID = "langPropLocalLangName";
-    public static final String langPropUseLocalLexicon = "langPropUseLocalLexicon";
-    public static final String langPropKerningVal = "langPropKerningValue";
-    public static final String langPropOverrideRegexFont ="langPropOverrideRegexFont";
+    public static final String LANG_PROPERTIES_XID = "languageProperties";
+    public static final String FONT_CON_XID = "fontCon";
+    public static final String FONT_LOCAL_XID = "fontLocal";
+    public static final String LANG_PROP_LANG_NAME_XID = "langName";
+    public static final String LANG_PROP_FONT_SIZE_XID = "fontSize";
+    public static final String LANG_PROP_FONT_STYLE_XID = "fontStyle";
+    public static final String LANG_PROP_LOCAL_FONT_SIZE_XID = "localFontSize";
+    public static final String LANG_PROP_ALPHA_ORDER_XID = "alphaOrder";
+    public static final String LANG_PROP_TYPE_MAND_XID = "langPropTypeMandatory";
+    public static final String LANG_PROP_LOCAL_MAND_XID = "langPropLocalMandatory";
+    public static final String LANG_PROP_WORD_UNIQUE_XID = "langPropWordUniqueness";
+    public static final String LANG_PROP_LOCAL_UNIQUE_XID = "langPropLocalUniqueness";
+    public static final String LANG_PROP_IGNORE_CASE_XID = "langPropIgnoreCase";
+    public static final String LANG_PROP_DISABLE_PROC_REGEX = "langPropDisableProcRegex";
+    public static final String LANG_PROP_ENFORCE_RTL_XID = "langPropEnforceRTL";
+    public static final String LANG_PROP_AUTH_COPYRIGHT_XID = "langPropAuthorCopyright";
+    public static final String LANG_PROP_LOCAL_NAME_XID = "langPropLocalLangName";
+    public static final String LANG_PROP_USE_LOCAL_LEX_XID = "langPropUseLocalLexicon";
+    public static final String LANG_PROP_KERN_VAL_XID = "langPropKerningValue";
+    public static final String LANG_PROP_OVERRIDE_REGEX_FONT_XID ="langPropOverrideRegexFont";
     
     // character replacement pair values
     public static final String langPropCharRepContainerXID = "langPropCharRep";
@@ -298,7 +298,10 @@ public class PGTUtil {
     public static final String True = "T";
     public static final String False = "F";
     public static final String displayName = "PolyGlot";
-    public static final String homePage = "http://draquet.github.io/PolyGlot/";
+    
+    // web locations
+    public static final String HOMEPAGE_URL = "http://draquet.github.io/PolyGlot/";
+    public static final String UPDATE_FILE_URL = "https://drive.google.com/uc?export=download&id=0B2RMQ7sRXResN3VwLTAwTFE0ZlE";
 
     // screen names when they're required as constants...
     public static final String scrNameLexicon;
@@ -554,7 +557,7 @@ public class PGTUtil {
      * @return 
      */
     public static File getDefaultDirectory() {
-        File ret = new File(System.getProperty("user.dir") + File.separator + PGTUtil.POLYGLOT_WORKINGDIRECTORY);
+        File ret = new File(System.getProperty("user.home") + File.separator + PGTUtil.POLYGLOT_WORKINGDIRECTORY);
         
         if (!ret.exists()) {
             ret.mkdir();
