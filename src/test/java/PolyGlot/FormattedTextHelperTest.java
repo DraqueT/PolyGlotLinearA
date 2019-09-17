@@ -20,6 +20,8 @@
 package PolyGlot;
 
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.JTextPane;
@@ -104,11 +106,19 @@ public class FormattedTextHelperTest {
         Entry<String, PFontInfo> title = results.get(0);
         Entry<String, PFontInfo> lodenkurExample = results.get(6);
         
+        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        List<String> fonts = Arrays.asList(g.getAvailableFontFamilyNames());
+        boolean fontInstalled = fonts.contains("Lucidia Grande");
+        
+        // if the font isn't installed, it'll just be the default font/size...
+        if (fontInstalled) {
+            assertEquals(title.getValue().awtFont.getName(), "Lucida Grande");
+            assertEquals(title.getValue().size, 28);
+        }
+        
         assertEquals(results.size(), 12);
         assertEquals(title.getKey(), "LODENKUR");
-        assertEquals(title.getValue().awtColor, Color.black);
-        assertEquals(title.getValue().awtFont.getName(), "Lucida Grande");
-        assertEquals(title.getValue().size, 28);
+        assertEquals(title.getValue().awtColor, Color.black);     
         assertEquals(lodenkurExample.getKey(), "6f");
         assertEquals(lodenkurExample.getValue().awtColor, Color.black);
         assertEquals(lodenkurExample.getValue().awtFont.getName(), "Kukun_Linear_A Regular");

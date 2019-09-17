@@ -1,7 +1,9 @@
 #!/bin/bash
+# Constructs PolyGlot Mac package
+
 JAVAFX_LOCATION_MAC="/Users/draque/.m2/repository/org/openjfx"
 JAVAFX_VER="12.0.2"
-JAVA_PACKAGER_LOCATION="/Users/draque/NetBeansProjects/jdk_14_packaging/Contents/Home/bin"
+JAVA_PACKAGER_LOCATION="/Users/draque/NetBeansProjects/jdk_14_packaging/Contents/Home/bin"  # this will go away once Java 14 drops officially...
 JAR_W_DEP="PolyGlotLinA-3.0-jar-with-dependencies.jar"
 JAR_WO_DEP="PolyGlotLinA-3.0.jar"
 
@@ -28,7 +30,7 @@ fi
 if [ "$1" = "" ] || [ "$1" = "pack" ]; then
   rm -rf appimage
   echo "packing mac app..."
-  $JAVA_PACKAGER_LOCATION/jpackage --runtime-image build/image --input target --output appimage --name PolyGlot --main-jar $JAR_W_DEP --copyright "2014-2019 Draque Thompson" --description "PolyGlot is a spoken language construction toolkit." --mac-bundle-identifier "PolyGlot" --mac-bundle-name "PolyGlot" --file-associations appimage/PolyGlot.app/Contents/Java/PolyGlot.cfg
+  $JAVA_PACKAGER_LOCATION/jpackage --runtime-image build/image --input target --output appimage --name PolyGlot --main-jar $JAR_W_DEP --copyright "2014-2019 Draque Thompson" --description "PolyGlot is a spoken language construction toolkit." --mac-bundle-identifier "PolyGlot" --mac-bundle-name "PolyGlot"
   cp appimage/PolyGlot.app/Contents/Java/PolyGlot.cfg appimage/PolyGlot.app/Contents/PolyGlot.cfg
   rm -rf appimage/PolyGlot.app/Contents/Java
   mkdir appimage/PolyGlot.app/Contents/Java
