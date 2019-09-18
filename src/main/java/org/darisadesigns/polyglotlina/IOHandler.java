@@ -1155,10 +1155,14 @@ public class IOHandler {
         }
     }
     
+    public static File gettErrorLogFile() {
+        return new File(PGTUtil.getErrorDirectory().getAbsolutePath() 
+                + File.separator + PGTUtil.ERROR_LOG_FILE);
+    }
+    
     public static String getErrorLog() throws FileNotFoundException {
         String ret = "";
-        File errorLog = new File(PGTUtil.getErrorDirectory().getAbsolutePath() 
-                + File.separator + PGTUtil.ERROR_LOG_FILE);
+        File errorLog = gettErrorLogFile();
 
         if (errorLog.exists()) {
             Scanner logScanner = new Scanner(errorLog).useDelimiter("\\Z");

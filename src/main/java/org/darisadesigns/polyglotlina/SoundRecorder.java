@@ -462,42 +462,40 @@ public class SoundRecorder {
      * @param filePath path to load MP3
      */
     private void playAudio(String filePath) throws Exception {
-        SwingUtilities.invokeLater(() -> {
-            final int BUFFER_SIZE = 128000;
-            AudioInputStream astream;
-            AudioFormat audioFormat;
-            SourceDataLine sourceLine = null;
+        final int BUFFER_SIZE = 128000;
+        AudioInputStream astream;
+        AudioFormat audioFormat;
+        SourceDataLine sourceLine = null;
 
-            try {
-                InputStream istream = SoundRecorder.class.getResource(filePath).openStream();
-                astream = AudioSystem.getAudioInputStream(istream);
-                audioFormat = astream.getFormat();
+        try {
+            InputStream istream = SoundRecorder.class.getResource(filePath).openStream();
+            astream = AudioSystem.getAudioInputStream(istream);
+            audioFormat = astream.getFormat();
 
-                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-                sourceLine = (SourceDataLine) AudioSystem.getLine(info);
-                sourceLine.open(audioFormat);
+            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+            sourceLine = (SourceDataLine) AudioSystem.getLine(info);
+            sourceLine.open(audioFormat);
 
-                sourceLine.start();
+            sourceLine.start();
 
-                int nBytesRead = 0;
-                byte[] abData = new byte[BUFFER_SIZE];
-                while (nBytesRead != -1) {
-                    nBytesRead = astream.read(abData, 0, abData.length);
+            int nBytesRead = 0;
+            byte[] abData = new byte[BUFFER_SIZE];
+            while (nBytesRead != -1) {
+                nBytesRead = astream.read(abData, 0, abData.length);
 
-                    if (nBytesRead >= 0) {
-                        sourceLine.write(abData, 0, nBytesRead);
-                    }
-                }
-            } catch (IOException
-                    | LineUnavailableException
-                    | UnsupportedAudioFileException e) {
-                InfoBox.error("Sound Error", "Unable to play sound: " + filePath + " due to: " + e.getLocalizedMessage(), null);
-            } finally {
-                if (sourceLine != null) {
-                    sourceLine.drain();
-                    sourceLine.close();
+                if (nBytesRead >= 0) {
+                    sourceLine.write(abData, 0, nBytesRead);
                 }
             }
-        });
+        } catch (IOException
+                | LineUnavailableException
+                | UnsupportedAudioFileException e) {
+            InfoBox.error("Sound Error", "Unable to play sound: " + filePath + " due to: " + e.getLocalizedMessage(), null);
+        } finally {
+            if (sourceLine != null) {
+                sourceLine.drain();
+                sourceLine.close();
+            }
+        }
     }
 }

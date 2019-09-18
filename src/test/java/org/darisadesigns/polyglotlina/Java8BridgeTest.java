@@ -107,7 +107,17 @@ public class Java8BridgeTest {
     @Test
     public void testExportExcelDict() throws Exception {
         System.out.println("exportExcelDict");
-        File expectedFile = new File(PGTUtil.TESTRESOURCES + "excel_export_check.xls");
+        String os = System.getProperty("os.name").toLowerCase();
+        File expectedFile;
+        
+        // expectation of file slightly different per OS
+        if (os.contains("linux")) {
+            expectedFile = new File(PGTUtil.TESTRESOURCES + "excel_export_checkLinux.xls");// TODO: Create this file so it doesn't fail on Linux
+        } else if (os.contains("win")) {
+            expectedFile = new File(PGTUtil.TESTRESOURCES + "excel_export_check_win.xls");
+        } else {
+            expectedFile = new File(PGTUtil.TESTRESOURCES + "excel_export_check.xls");
+        }
         
         core.readFile(PGTUtil.TESTRESOURCES + "excel_exp_test.pgd");
         boolean separateDeclensions = true;
@@ -118,12 +128,7 @@ public class Java8BridgeTest {
         byte[] expBytes = Files.readAllBytes(expectedFile.toPath());
         byte[] resBytes = Files.readAllBytes(result.toPath());
         
-        // TODO: figure out why this renders slightly differently on Linux... the files look the same to human inspection.
-        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            assertTrue(expBytes.length == resBytes.length);
-        } else {
-            assertTrue(Arrays.equals(expBytes, resBytes));
-        }
+        assertTrue(Arrays.equals(expBytes, resBytes));
     }
     
     private void cleanup() {

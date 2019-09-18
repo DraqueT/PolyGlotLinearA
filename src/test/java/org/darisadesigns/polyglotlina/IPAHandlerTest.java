@@ -53,7 +53,7 @@ public class IPAHandlerTest {
         // only test playing the first sounds of each library (just test the rest exist)
         String firstSound = (String)charMap.values().toArray()[0];
         soundRecorder.playAudioFile(PGTUtil.ipaSoundsLocation + PGTUtil.ucla_location + firstSound + PGTUtil.wavSuffix);
-        soundRecorder.playAudioFile(PGTUtil.ucla_location + PGTUtil.ucla_location + firstSound + PGTUtil.wavSuffix);
+        soundRecorder.playAudioFile(PGTUtil.ipaSoundsLocation + PGTUtil.ucla_location + firstSound + PGTUtil.wavSuffix);
         
         for (String soundName : charMap.values()) {
             String sound = "";
